@@ -1,15 +1,11 @@
 package hu.webuni.hr.totinistvan;
 
 import hu.webuni.hr.totinistvan.model.Employee;
-import hu.webuni.hr.totinistvan.service.DefaultEmployeeService;
-import hu.webuni.hr.totinistvan.service.EmployeeService;
 import hu.webuni.hr.totinistvan.service.SalaryService;
-import hu.webuni.hr.totinistvan.service.SmartEmployeeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.context.annotation.Bean;
 
 import java.time.LocalDateTime;
 
