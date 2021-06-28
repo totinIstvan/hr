@@ -1,0 +1,17 @@
+spring:
+  profiles:
+    active: "smart"
+
+employee:
+  yearsworked:
+    ten: 10
+    five: 2
+    twoandhalf: 2.5
+  payrisepercent:
+    special:
+      ten: 10
+      five: 5
+      two: 2
+      zero: 0
+    default:
+      five: 5
