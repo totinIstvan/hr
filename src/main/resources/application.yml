@@ -5,7 +5,7 @@ spring:
 employee:
   yearsworked:
     ten: 10
-    five: 2
+    five: 5
     twoandhalf: 2.5
   payrisepercent:
     special:
