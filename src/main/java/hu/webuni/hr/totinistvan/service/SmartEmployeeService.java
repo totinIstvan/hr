@@ -19,7 +19,7 @@ public class SmartEmployeeService implements EmployeeService {
 
         Duration duration = Duration.between(employee.getJoinDate(), LocalDateTime.now());
 
-        double yearsWorked = Math.round((duration.getSeconds() / 30758400.0) * 10.0) / 10.0;
+        double yearsWorked = Math.round((duration.toDays() / 365.0) * 10.0) / 10.0;
 
         return yearsWorked >= config.getYearsWorked().getTen() ? config.getPayrisePercent().getSpecial().getTen()
                 : yearsWorked >= config.getYearsWorked().getFive() ? config.getPayrisePercent().getSpecial().getFive()
