@@ -3,12 +3,14 @@ package hu.webuni.hr.totinistvan.config;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
+
 @ConfigurationProperties(prefix = "employee")
 @Component
 public class EmployeeConfigProperties {
 
     private YearsWorked yearsWorked = new YearsWorked();
-    private PayrisePercent payrisePercent = new PayrisePercent();
+    private PayRisePercent payRisePercent = new PayRisePercent();
 
     public YearsWorked getYearsWorked() {
         return yearsWorked;
@@ -18,45 +20,27 @@ public class EmployeeConfigProperties {
         this.yearsWorked = yearsWorked;
     }
 
-    public PayrisePercent getPayrisePercent() {
-        return payrisePercent;
+    public PayRisePercent getPayRisePercent() {
+        return payRisePercent;
     }
 
-    public void setPayrisePercent(PayrisePercent payrisePercent) {
-        this.payrisePercent = payrisePercent;
+    public void setPayRisePercent(PayRisePercent payRisePercent) {
+        this.payRisePercent = payRisePercent;
     }
 
     public static class YearsWorked {
-        private double ten;
-        private double five;
-        private double twoAndHalf;
+        private List<Double> years;
 
-        public double getTen() {
-            return ten;
+        public List<Double> getYears() {
+            return years;
         }
 
-        public void setTen(double ten) {
-            this.ten = ten;
-        }
-
-        public double getFive() {
-            return five;
-        }
-
-        public void setFive(double five) {
-            this.five = five;
-        }
-
-        public double getTwoAndHalf() {
-            return twoAndHalf;
-        }
-
-        public void setTwoAndHalf(double twoAndHalf) {
-            this.twoAndHalf = twoAndHalf;
+        public void setYears(List<Double> years) {
+            this.years = years;
         }
     }
 
-    public static class PayrisePercent {
+    public static class PayRisePercent {
         private Special special = new Special();
         private Default def = new Default();
 
@@ -78,41 +62,14 @@ public class EmployeeConfigProperties {
     }
 
     public static class Special {
-        private int ten;
-        private int five;
-        private int two;
-        private int zero;
+        private List<Integer> percents;
 
-        public int getTen() {
-            return ten;
+        public List<Integer> getPercents() {
+            return percents;
         }
 
-        public void setTen(int ten) {
-            this.ten = ten;
-        }
-
-        public int getFive() {
-            return five;
-        }
-
-        public void setFive(int five) {
-            this.five = five;
-        }
-
-        public int getTwo() {
-            return two;
-        }
-
-        public void setTwo(int two) {
-            this.two = two;
-        }
-
-        public int getZero() {
-            return zero;
-        }
-
-        public void setZero(int zero) {
-            this.zero = zero;
+        public void setPercents(List<Integer> percents) {
+            this.percents = percents;
         }
     }
 

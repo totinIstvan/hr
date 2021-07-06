@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Service
 public class SmartEmployeeService implements EmployeeService {
@@ -21,9 +22,18 @@ public class SmartEmployeeService implements EmployeeService {
 
         double yearsWorked = Math.round((duration.toDays() / 365.0) * 10.0) / 10.0;
 
-        return yearsWorked >= config.getYearsWorked().getTen() ? config.getPayrisePercent().getSpecial().getTen()
-                : yearsWorked >= config.getYearsWorked().getFive() ? config.getPayrisePercent().getSpecial().getFive()
-                : yearsWorked >= config.getYearsWorked().getTwoAndHalf() ? config.getPayrisePercent().getSpecial().getTwo()
-                : config.getPayrisePercent().getSpecial().getZero();
+        List<Double> years = config.getYearsWorked().getYears();
+
+        List<Integer> percents = config.getPayRisePercent().getSpecial().getPercents();
+
+        double minOfYearsForPayRise = years.stream()
+                .filter(year -> year <= yearsWorked)
+                .findFirst()
+                .orElse(0.0);
+
+        return percents.stream()
+                .filter(percent -> minOfYearsForPayRise >= percent)
+                .findFirst()
+                .get();
     }
 }

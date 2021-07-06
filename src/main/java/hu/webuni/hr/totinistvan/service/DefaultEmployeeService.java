@@ -13,6 +13,6 @@ public class DefaultEmployeeService implements EmployeeService {
 
     @Override
     public int getPayRaisePercent(Employee employee) {
-        return config.getPayrisePercent().getDef().getFive();
+        return config.getPayRisePercent().getDef().getFive();
     }
 }
