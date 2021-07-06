@@ -1,8 +1,8 @@
-package hu.webuni.hr.totinistvan.model;
+package hu.webuni.hr.totinistvan.model.dto;
 
 import java.time.LocalDateTime;
 
-public class Employee {
+public class EmployeeDto {
 
     private long id;
     private String name;
@@ -10,12 +10,15 @@ public class Employee {
     private int salary;
     private LocalDateTime joinDate;
 
-    public Employee(long id, String name, String position, int salary, LocalDateTime joinDate) {
+    public EmployeeDto(long id, String name, String position, int salary, LocalDateTime joinDate) {
         this.id = id;
         this.name = name;
         this.position = position;
         this.salary = salary;
         this.joinDate = joinDate;
+    }
+
+    public EmployeeDto() {
     }
 
     public long getId() {
@@ -57,4 +60,5 @@ public class Employee {
     public void setJoinDate(LocalDateTime joinDate) {
         this.joinDate = joinDate;
     }
+
 }

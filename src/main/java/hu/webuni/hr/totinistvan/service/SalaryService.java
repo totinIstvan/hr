@@ -1,6 +1,6 @@
 package hu.webuni.hr.totinistvan.service;
 
-import hu.webuni.hr.totinistvan.model.Employee;
+import hu.webuni.hr.totinistvan.model.entity.Employee;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -18,5 +18,4 @@ public class SalaryService {
         employee.setSalary((int) Math.round(basicSalary + basicSalary / 100.0 * payRisePercent));
         return employee.getSalary();
     }
-
 }

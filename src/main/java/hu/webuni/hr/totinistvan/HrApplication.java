@@ -1,6 +1,6 @@
 package hu.webuni.hr.totinistvan;
 
-import hu.webuni.hr.totinistvan.model.Employee;
+import hu.webuni.hr.totinistvan.model.entity.Employee;
 import hu.webuni.hr.totinistvan.service.SalaryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
