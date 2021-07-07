@@ -34,7 +34,7 @@ public class EmployeeTLController {
     }
 
     @PostMapping("employees")
-    public String arrEmployee(Employee employee) {
+    public String createEmployee(Employee employee) {
         employees.add(employee);
         return "redirect:employees";
     }
