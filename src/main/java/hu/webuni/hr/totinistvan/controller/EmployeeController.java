@@ -38,13 +38,13 @@ public class EmployeeController {
     }
 
     @PostMapping
-    public EmployeeDto createEmployee(@RequestBody EmployeeDto employeeDto) {
+    public EmployeeDto addNew(@RequestBody EmployeeDto employeeDto) {
         employees.put(employeeDto.getId(), employeeDto);
         return employeeDto;
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<EmployeeDto> updateEmployee(@PathVariable long id, @RequestBody EmployeeDto employeeDto) {
+    public ResponseEntity<EmployeeDto> update(@PathVariable long id, @RequestBody EmployeeDto employeeDto) {
         if (!employees.containsKey(id)) {
             return ResponseEntity.notFound().build();
         }
@@ -55,7 +55,7 @@ public class EmployeeController {
     }
 
     @DeleteMapping("/{id}")
-    public void deleteEmployee(@PathVariable long id) {
+    public void delete(@PathVariable long id) {
         employees.remove(id);
     }
 

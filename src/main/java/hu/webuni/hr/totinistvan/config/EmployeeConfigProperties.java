@@ -3,45 +3,24 @@ package hu.webuni.hr.totinistvan.config;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 
-import java.util.List;
+import java.util.TreeMap;
 
 @ConfigurationProperties(prefix = "employee")
 @Component
 public class EmployeeConfigProperties {
 
-    private YearsWorked yearsWorked = new YearsWorked();
-    private PayRisePercent payRisePercent = new PayRisePercent();
+    private Salary salary = new Salary();
 
-    public YearsWorked getYearsWorked() {
-        return yearsWorked;
+    public Salary getSalary() {
+        return salary;
     }
 
-    public void setYearsWorked(YearsWorked yearsWorked) {
-        this.yearsWorked = yearsWorked;
+    public void setSalary(Salary salary) {
+        this.salary = salary;
     }
 
-    public PayRisePercent getPayRisePercent() {
-        return payRisePercent;
-    }
-
-    public void setPayRisePercent(PayRisePercent payRisePercent) {
-        this.payRisePercent = payRisePercent;
-    }
-
-    public static class YearsWorked {
-        private List<Double> years;
-
-        public List<Double> getYears() {
-            return years;
-        }
-
-        public void setYears(List<Double> years) {
-            this.years = years;
-        }
-    }
-
-    public static class PayRisePercent {
-        private Special special = new Special();
+    public static class Salary {
+        private Smart smart = new Smart();
         private Default def = new Default();
 
         public Default getDef() {
@@ -52,36 +31,37 @@ public class EmployeeConfigProperties {
             this.def = def;
         }
 
-        public Special getSpecial() {
-            return special;
+        public Smart getSmart() {
+            return smart;
         }
 
-        public void setSpecial(Special special) {
-            this.special = special;
+        public void setSmart(Smart smart) {
+            this.smart = smart;
         }
     }
 
-    public static class Special {
-        private List<Integer> percents;
+    public static class Smart {
 
-        public List<Integer> getPercents() {
-            return percents;
+        private TreeMap<Double, Integer> limits;
+
+        public TreeMap<Double, Integer> getLimits() {
+            return limits;
         }
 
-        public void setPercents(List<Integer> percents) {
-            this.percents = percents;
+        public void setLimits(TreeMap<Double, Integer> limits) {
+            this.limits = limits;
         }
     }
 
     public static class Default {
-        private int five;
+        private int percent;
 
-        public int getFive() {
-            return five;
+        public int getPercent() {
+            return percent;
         }
 
-        public void setFive(int five) {
-            this.five = five;
+        public void setPercent(int percent) {
+            this.percent = percent;
         }
     }
 }

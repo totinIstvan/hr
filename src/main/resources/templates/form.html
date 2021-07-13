@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Form</title>
+</head>
+<body>
+<div th:fragment="formfields">
+  <label for="name">Name:</label><br>
+  <input id="name" th:field="*{name}"/><br>
+  <label for="position">Position:</label><br>
+  <input id="position" th:field="*{position}"/><br>
+  <label for="salary">Salary:</label><br>
+  <input id="salary" th:field="*{salary}"/><br>
+  <label for="joinDate">Date of employment:</label><br>
+  <input id="joinDate" th:field="*{joinDate}"/><br><br>
+</div>
+</body>
+</html>

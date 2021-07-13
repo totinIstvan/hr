@@ -61,4 +61,14 @@ public class EmployeeDto {
         this.joinDate = joinDate;
     }
 
+    @Override
+    public String toString() {
+        return "EmployeeDto{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", position='" + position + '\'' +
+                ", salary=" + salary +
+                ", joinDate=" + joinDate +
+                '}';
+    }
 }
