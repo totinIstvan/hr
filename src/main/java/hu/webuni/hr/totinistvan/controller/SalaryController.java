@@ -17,7 +17,7 @@ public class SalaryController {
         this.employeeService = employeeService;
     }
 
-    @GetMapping("/pay_rise_percent")
+    @GetMapping("/pay_raise_percent")
     public int payRisePercent(@RequestBody Employee employee) {
         return employeeService.getPayRaisePercent(employee);
     }

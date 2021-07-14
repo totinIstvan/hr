@@ -61,7 +61,8 @@ public class EmployeeController {
 
     @GetMapping("/limit")
     public List<EmployeeDto> getWithHigherSalary(@RequestParam int limit) {
-        return employees.values().stream()
+        return employees.values()
+                .stream()
                 .filter(employee -> employee.getSalary() > limit)
                 .collect(Collectors.toList());
     }

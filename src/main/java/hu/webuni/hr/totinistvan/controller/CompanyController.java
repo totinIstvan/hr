@@ -42,7 +42,7 @@ public class CompanyController {
     }
 
     @GetMapping
-    public List<CompanyDto> getAll(@RequestParam(required = false) boolean full) {
+    public List<CompanyDto> getAll(@RequestParam(required = false) Boolean full) {
         if (!full) {
             List<CompanyDto> res = new ArrayList<>();
             for (CompanyDto company : companies.values()) {
@@ -54,7 +54,7 @@ public class CompanyController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<CompanyDto> getById(@PathVariable long id, @RequestParam(required = false) boolean full) {
+    public ResponseEntity<CompanyDto> getById(@PathVariable long id, @RequestParam(required = false) Boolean full) {
         CompanyDto companyDto;
         try {
             companyDto = companies.get(id);

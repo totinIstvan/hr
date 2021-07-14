@@ -36,14 +36,21 @@ public class EmployeeTLController {
 
     @GetMapping("/employee/{id}")
     public String returnEmployee(@PathVariable long id, Map<String, Object> model) {
-        model.put("employees", employees);
-        model.put("employee", employees.get((int) (id - 1)));
+        model.put("employee", employees.stream()
+                .filter(e -> e.getId() == id)
+                .findFirst()
+                .get());
         return "update";
     }
 
     @PostMapping("/employee/{id}")
     public String updateEmployee(@PathVariable long id, Employee employee) {
-        employees.set((int) (id - 1), employee);
+        for (int i = 0; i < employees.size(); i++) {
+            if (employees.get(i).getId() == id) {
+                employees.set(i, employee);
+                break;
+            }
+        }
         return "redirect:/";
     }
 
