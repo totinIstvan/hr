@@ -1,13 +1,15 @@
 package hu.webuni.hr.totinistvan.controller;
 
+import com.fasterxml.jackson.annotation.JsonView;
 import hu.webuni.hr.totinistvan.model.dto.CompanyDto;
 import hu.webuni.hr.totinistvan.model.dto.EmployeeDto;
-import hu.webuni.hr.totinistvan.model.entity.Employee;
+import hu.webuni.hr.totinistvan.model.dto.Views;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/companies")
@@ -16,9 +18,9 @@ public class CompanyController {
     private Map<Long, CompanyDto> companies = new HashMap<>();
 
     {
-        companies.put(1L, new CompanyDto(1, "AllAccess Doe", "4615 First Ave. Pittsburg, PA 15342"));
-        companies.put(2L, new CompanyDto(2, "Building Doe", "1768 Fifth Ave. New York, NY 10342"));
-        companies.put(3L, new CompanyDto(3, "Luxury Doe", "1245 Eighth Ave. Philadelphia, PA 15872"));
+        companies.put(1L, new CompanyDto(1, "AllAccess Doe", "HN570012", "4615 First Ave. Pittsburg, PA 15342"));
+        companies.put(2L, new CompanyDto(2, "Building Doe", "HZ070934", "1768 Fifth Ave. New York, NY 10342"));
+        companies.put(3L, new CompanyDto(3, "Luxury Doe", "NN837910", "1245 Eighth Ave. Philadelphia, PA 15872"));
 
         EmployeeDto e1 = new EmployeeDto(1L, "John Doe", "CEO", 1_500_000, LocalDateTime.of(1980, 6, 15, 8, 0, 0));
         EmployeeDto e2 = new EmployeeDto(2L, "Jack Doe", "CTO", 1_000_000, LocalDateTime.of(2012, 9, 10, 8, 0, 0));
@@ -42,18 +44,29 @@ public class CompanyController {
     }
 
     @GetMapping
-    public List<CompanyDto> getAll(@RequestParam(required = false) Boolean full) {
-        if (!full) {
-            List<CompanyDto> res = new ArrayList<>();
-            for (CompanyDto company : companies.values()) {
-                res.add(withoutEmployees(company));
-            }
-            return res;
-        }
+    @JsonView(Views.BaseData.class)
+    public List<CompanyDto> getCompaniesWithoutEmployees() {
+        return new ArrayList<>(companies.values());
+    }
+
+    @GetMapping(params = "full=true")
+    public List<CompanyDto> getAll() {
         return new ArrayList<>(companies.values());
     }
 
     @GetMapping("/{id}")
+    @JsonView(Views.BaseData.class)
+    public ResponseEntity<CompanyDto> getCompanyWithoutEmployeesById(@PathVariable long id) {
+        CompanyDto companyDto;
+        try {
+            companyDto = companies.get(id);
+        } catch (NoSuchElementException e) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(companyDto);
+    }
+
+    @GetMapping(path = "/{id}", params = "full=true")
     public ResponseEntity<CompanyDto> getById(@PathVariable long id, @RequestParam(required = false) Boolean full) {
         CompanyDto companyDto;
         try {
@@ -70,7 +83,6 @@ public class CompanyController {
 
     @PostMapping
     public CompanyDto addNew(@RequestBody CompanyDto companyDto) {
-        companyDto.setRegistrationNumber(UUID.randomUUID().toString().substring(0, 8));
         companies.put(companyDto.getId(), companyDto);
         return companyDto;
     }
@@ -82,8 +94,7 @@ public class CompanyController {
         }
 
         companyDto.setId(id);
-        // Ez kell?
-//        companyDto.setEmployees(companies.get(id).getEmployees());
+        companyDto.setEmployees(companies.get(id).getEmployees());
         companies.put(id, companyDto);
         return ResponseEntity.ok(companyDto);
     }
@@ -127,8 +138,6 @@ public class CompanyController {
     }
 
     private CompanyDto withoutEmployees(CompanyDto companyDto) {
-        CompanyDto company = new CompanyDto(companyDto.getId(), companyDto.getName(), companyDto.getAddress());
-        company.setRegistrationNumber(companyDto.getRegistrationNumber());
-        return company;
+        return new CompanyDto(companyDto.getId(), companyDto.getName(), companyDto.getRegistrationNumber(), companyDto.getAddress());
     }
 }

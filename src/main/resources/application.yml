@@ -15,13 +15,13 @@ spring:
     date-format: yyyy-MM-dd HH:mm:ss
 
 
-employee:
-  salary:
-    smart:
-      limits:
-        0: 0
-        2.5: 2
-        5: 5
-        10: 10
-    def:
-      percent: 5
+#employee:
+#  salary:
+#    smart:
+#      limits:
+#        0: 0
+#        2.5: 2
+#        5: 5
+#        10: 10
+#    def:
+#      percent: 5

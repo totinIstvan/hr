@@ -2,7 +2,6 @@ package hu.webuni.hr.totinistvan.model.entity;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 public class Company {
     private long id;
@@ -12,9 +11,9 @@ public class Company {
 
     private List<Employee> employees = new ArrayList<>();
 
-    public Company(long id, String name, String address) {
+    public Company(long id, String name, String registrationNumber, String address) {
         this.id = id;
-        this.registrationNumber = UUID.randomUUID().toString().substring(0, 8);
+        this.registrationNumber = registrationNumber;
         this.name = name;
         this.address = address;
     }

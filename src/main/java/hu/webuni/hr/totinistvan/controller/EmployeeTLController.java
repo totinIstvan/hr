@@ -44,9 +44,9 @@ public class EmployeeTLController {
     }
 
     @PostMapping("/employee/{id}")
-    public String updateEmployee(@PathVariable long id, Employee employee) {
+    public String updateEmployee(Employee employee) {
         for (int i = 0; i < employees.size(); i++) {
-            if (employees.get(i).getId() == id) {
+            if (employees.get(i).getId() == employee.getId()) {
                 employees.set(i, employee);
                 break;
             }

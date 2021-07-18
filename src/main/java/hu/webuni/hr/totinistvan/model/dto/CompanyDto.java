@@ -1,21 +1,27 @@
 package hu.webuni.hr.totinistvan.model.dto;
 
+import com.fasterxml.jackson.annotation.JsonView;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
 public class CompanyDto {
 
+    @JsonView(Views.BaseData.class)
     private long id;
+    @JsonView(Views.BaseData.class)
     private String registrationNumber;
+    @JsonView(Views.BaseData.class)
     private String name;
+    @JsonView(Views.BaseData.class)
     private String address;
 
     private List<EmployeeDto> employees = new ArrayList<>();
 
-    public CompanyDto(long id, String name, String address) {
+    public CompanyDto(long id, String name, String registrationNumber, String address) {
         this.id = id;
-        this.registrationNumber = UUID.randomUUID().toString().substring(0, 8);
+        this.registrationNumber = registrationNumber;
         this.name = name;
         this.address = address;
     }
