@@ -1,69 +1,80 @@
 package hu.webuni.hr.totinistvan.controller;
 
+import hu.webuni.hr.totinistvan.customExceptions.WrongDataInputException;
+import hu.webuni.hr.totinistvan.mapper.EmployeeMapper;
 import hu.webuni.hr.totinistvan.model.dto.EmployeeDto;
-import org.springframework.http.ResponseEntity;
+import hu.webuni.hr.totinistvan.model.entity.Employee;
+import hu.webuni.hr.totinistvan.service.EmployeeService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
+import javax.validation.Valid;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.HashMap;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/employees")
 public class EmployeeController {
 
-    private Map<Long, EmployeeDto> employees = new HashMap<>();
+    @Autowired
+    private EmployeeService employeeService;
 
-    {
-        employees.put(1L, new EmployeeDto(1, "John Doe", "CEO", 1_500_000, LocalDateTime.of(1980, 6, 15, 8, 0,0)));
-        employees.put(2L, new EmployeeDto(2, "Jack Doe", "CTO", 1_000_000, LocalDateTime.of(2012, 9, 10, 8, 0,0)));
-        employees.put(3L, new EmployeeDto(3, "Jane Doe", "CMO", 1_000_000, LocalDateTime.of(2017, 12, 3, 8, 0,0)));
-    }
+    @Autowired
+    private EmployeeMapper employeeMapper;
 
     @GetMapping
     public List<EmployeeDto> getAll() {
-        return new ArrayList<>(employees.values());
+        return employeeMapper.employeesToDtos(employeeService.findAll());
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<EmployeeDto> getById(@PathVariable long id) {
-        EmployeeDto employeeDto = employees.get(id);
-        if (employeeDto != null) {
-            return ResponseEntity.ok(employeeDto);
+    public EmployeeDto getById(@PathVariable long id) {
+        Employee employee = employeeService.findById(id);
+        if (employee != null) {
+            return employeeMapper.employeeToDto(employee);
         }
-        return ResponseEntity.notFound().build();
+        throw new ResponseStatusException(HttpStatus.NOT_FOUND);
     }
 
     @PostMapping
-    public EmployeeDto addNew(@RequestBody EmployeeDto employeeDto) {
-        employees.put(employeeDto.getId(), employeeDto);
-        return employeeDto;
+    public EmployeeDto addNew(@RequestBody @Valid EmployeeDto employeeDto) {
+        checkJoinDate(employeeDto.getJoinDate());
+        Employee employee = employeeService.save(employeeMapper.employeeDtoToEmployee(employeeDto));
+        return employeeMapper.employeeToDto(employee);
+    }
+
+    private void checkJoinDate(LocalDateTime joinDate) {
+        if (ChronoUnit.DAYS.between(joinDate, LocalDateTime.now()) <= 0) {
+            throw new WrongDataInputException(joinDate);
+        }
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<EmployeeDto> update(@PathVariable long id, @RequestBody EmployeeDto employeeDto) {
-        if (!employees.containsKey(id)) {
-            return ResponseEntity.notFound().build();
+    public EmployeeDto update(@PathVariable long id, @RequestBody @Valid EmployeeDto employeeDto) {
+        checkJoinDate(employeeDto.getJoinDate());
+        Employee employee = employeeService.findById(id);
+        if (employee != null) {
+            employee = employeeService.update(id, employeeMapper.employeeDtoToEmployee(employeeDto));
+            return employeeMapper.employeeToDto(employee);
         }
-
-        employeeDto.setId(id);
-        employees.put(id, employeeDto);
-        return ResponseEntity.ok(employeeDto);
+        throw new ResponseStatusException(HttpStatus.NOT_FOUND);
     }
 
     @DeleteMapping("/{id}")
     public void delete(@PathVariable long id) {
-        employees.remove(id);
+        Employee employee = employeeService.findById(id);
+        if (employee == null) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        }
+        employeeService.delete(id);
     }
 
     @GetMapping("/limit")
     public List<EmployeeDto> getWithHigherSalary(@RequestParam int limit) {
-        return employees.values()
-                .stream()
-                .filter(employee -> employee.getSalary() > limit)
-                .collect(Collectors.toList());
+        List<Employee> employees = employeeService.getWithHigherSalary(limit);
+        return employeeMapper.employeesToDtos(employees);
     }
 }

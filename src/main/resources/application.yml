@@ -1,18 +1,18 @@
-spring:
-  profiles:
-    active: "smart"
-
-  thymeleaf:
-    cache: false
-
-  mvc:
-    format:
-      date: yyyy-MM-dd
-      date-time: yyyy-MM-dd HH:mm:ss
-      time: HH:mm:ss
-
-  jackson:
-    date-format: yyyy-MM-dd HH:mm:ss
+#spring:
+##  profiles:
+##    active: "smart"
+#
+#  thymeleaf:
+#    cache: false
+#
+#  mvc:
+#    format:
+#      date: yyyy-MM-dd
+#      date-time: yyyy-MM-dd HH:mm:ss
+#      time: HH:mm:ss
+#
+#  jackson:
+#    date-format: yyyy-MM-dd HH:mm:ss
 
 
 #employee:

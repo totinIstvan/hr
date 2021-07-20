@@ -1,17 +1,23 @@
 package hu.webuni.hr.totinistvan.model.dto;
 
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotBlank;
 import java.time.LocalDateTime;
 
 public class EmployeeDto {
 
     private long id;
+    @NotBlank
     private String name;
+    @NotBlank
     private String position;
+    @Min(0)
     private int salary;
     private LocalDateTime joinDate;
 
     public EmployeeDto(long id, String name, String position, int salary, LocalDateTime joinDate) {
         this.id = id;
+
         this.name = name;
         this.position = position;
         this.salary = salary;

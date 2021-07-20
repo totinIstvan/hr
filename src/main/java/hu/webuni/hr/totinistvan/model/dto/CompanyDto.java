@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonView;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 public class CompanyDto {
 

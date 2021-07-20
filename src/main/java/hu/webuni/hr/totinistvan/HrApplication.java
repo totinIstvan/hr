@@ -10,7 +10,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import java.time.LocalDateTime;
 
 @SpringBootApplication
-public class HrApplication implements CommandLineRunner {
+public class HrApplication implements  CommandLineRunner {
 
     @Autowired
     private SalaryService salaryService;
