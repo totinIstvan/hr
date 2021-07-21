@@ -6,8 +6,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
-import org.springframework.boot.test.web.client.TestRestTemplate;
-import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.test.web.reactive.server.WebTestClient;
 
 import java.time.LocalDateTime;
@@ -21,12 +19,6 @@ import static org.junit.jupiter.api.Assertions.*;
 public class EmployeeControllerTest {
 
     private static final String BASE_URI = "/api/employees";
-
-    @Autowired
-    private TestRestTemplate restTemplate;
-
-    @LocalServerPort
-    int port;
 
     @Autowired
     WebTestClient webTestClient;
