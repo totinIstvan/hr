@@ -1,6 +1,5 @@
 package hu.webuni.hr.totinistvan.controller;
 
-import hu.webuni.hr.totinistvan.customExceptions.WrongDataInputException;
 import hu.webuni.hr.totinistvan.model.dto.EmployeeDto;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,15 +20,13 @@ public class EmployeeControllerTest {
     private static final String BASE_URI = "/api/employees";
 
     @Autowired
-    WebTestClient webTestClient;
-
-    @Autowired
-    EmployeeController employeeController;
+    private WebTestClient webTestClient;
 
     @Test
     void addNew_addEmployeeWithValidData_returnsCorrectResults() {
-        long id = getAllEmployees().size() + 1;
         List<EmployeeDto> employeesBefore = getAllEmployees();
+
+        long id = employeesBefore.size() + 1;
 
         EmployeeDto employee = new EmployeeDto(id, "Jason Doe", "CBO", 1_000_000, LocalDateTime.of(2017, 2, 4, 8, 0, 0));
         createEmployee(employee);
@@ -46,13 +43,6 @@ public class EmployeeControllerTest {
     }
 
     @Test
-    void addNew_addEmployeeWithInvalidJoinDate_throwsWrongDataInputException() {
-        EmployeeDto employee = new EmployeeDto(4, "Jason Doe", "CBO", 1_000_000, LocalDateTime.of(2034, 2, 4, 8, 0, 0));
-
-        assertThrows(WrongDataInputException.class, () -> employeeController.addNew(employee));
-    }
-
-    @Test
     void addNew_addEmployeeWithInvalidJoinDate_throwsAssertionError() {
         EmployeeDto employee = new EmployeeDto(4, "Jason Doe", "CBO", 1_000_000, LocalDateTime.of(2034, 2, 4, 8, 0, 0));
 
@@ -63,7 +53,7 @@ public class EmployeeControllerTest {
     void update_updateEmployeeWithValidData_returnsUpdated() {
         long id = getAllEmployees().size() + 1;
         EmployeeDto employee = new EmployeeDto(id, "Jason Doe", "CBO", 1_000_000, LocalDateTime.of(2017, 2, 4, 8, 0, 0));
-        employeeController.addNew(employee);
+        createEmployee(employee);
         List<EmployeeDto> employeesBefore = getAllEmployees();
 
         EmployeeDto newEmployee = new EmployeeDto(id, "Julia Doe", "CBO", 1_200_000, LocalDateTime.of(2021, 7,19,8,0,0));
@@ -82,10 +72,7 @@ public class EmployeeControllerTest {
     @Test
     void update_updateEmployeeWithInvalidData_throwsAssertionError() {
         long id = getAllEmployees().size() + 1;
-        EmployeeDto employee = new EmployeeDto(id, "Jason Doe", "CBO", 1_000_000, LocalDateTime.of(2017, 2, 4, 8, 0, 0));
-        employeeController.addNew(employee);
-
-        EmployeeDto newEmployee = employeeController.update(id, new EmployeeDto(id, "Julia Doe", "", 1_200_000, LocalDateTime.of(2021, 7,19,8,0,0)));
+        EmployeeDto newEmployee = new EmployeeDto(id, "Julia Doe", "", 1_200_000, LocalDateTime.of(2021, 7,19,8,0,0));
         assertThrows(AssertionError.class, () -> updateEmployee(id, newEmployee));
     }
 

@@ -1,6 +1,5 @@
 package hu.webuni.hr.totinistvan.controller;
 
-import hu.webuni.hr.totinistvan.customExceptions.WrongDataInputException;
 import hu.webuni.hr.totinistvan.mapper.EmployeeMapper;
 import hu.webuni.hr.totinistvan.model.dto.EmployeeDto;
 import hu.webuni.hr.totinistvan.model.entity.Employee;
@@ -11,8 +10,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import javax.validation.Valid;
-import java.time.LocalDateTime;
-import java.time.temporal.ChronoUnit;
 import java.util.List;
 
 @RestController
@@ -41,20 +38,12 @@ public class EmployeeController {
 
     @PostMapping
     public EmployeeDto addNew(@RequestBody @Valid EmployeeDto employeeDto) {
-        checkJoinDate(employeeDto.getJoinDate());
         Employee employee = employeeService.save(employeeMapper.employeeDtoToEmployee(employeeDto));
         return employeeMapper.employeeToDto(employee);
     }
 
-    private void checkJoinDate(LocalDateTime joinDate) {
-        if (ChronoUnit.DAYS.between(joinDate, LocalDateTime.now()) <= 0) {
-            throw new WrongDataInputException(joinDate);
-        }
-    }
-
     @PutMapping("/{id}")
     public EmployeeDto update(@PathVariable long id, @RequestBody @Valid EmployeeDto employeeDto) {
-        checkJoinDate(employeeDto.getJoinDate());
         Employee employee = employeeService.findById(id);
         if (employee != null) {
             employee = employeeService.update(id, employeeMapper.employeeDtoToEmployee(employeeDto));
@@ -76,5 +65,11 @@ public class EmployeeController {
     public List<EmployeeDto> getWithHigherSalary(@RequestParam int limit) {
         List<Employee> employees = employeeService.getWithHigherSalary(limit);
         return employeeMapper.employeesToDtos(employees);
+    }
+
+    @PostMapping("/pay_raise_percent")
+    public int getPayRisePercent(@RequestBody EmployeeDto employeeDto) {
+        Employee employee = employeeMapper.employeeDtoToEmployee(employeeDto);
+        return employeeService.getPayRaisePercent(employee);
     }
 }

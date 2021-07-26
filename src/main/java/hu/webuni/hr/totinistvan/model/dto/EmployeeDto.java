@@ -2,6 +2,7 @@ package hu.webuni.hr.totinistvan.model.dto;
 
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Past;
 import java.time.LocalDateTime;
 
 public class EmployeeDto {
@@ -13,6 +14,7 @@ public class EmployeeDto {
     private String position;
     @Min(0)
     private int salary;
+    @Past
     private LocalDateTime joinDate;
 
     public EmployeeDto(long id, String name, String position, int salary, LocalDateTime joinDate) {
