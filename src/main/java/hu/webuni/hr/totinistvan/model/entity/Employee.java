@@ -1,14 +1,27 @@
 package hu.webuni.hr.totinistvan.model.entity;
 
-import java.time.LocalDateTime;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import javax.persistence.*;
+import java.time.LocalDateTime;
+import java.util.Objects;
+
+@Entity
 public class Employee {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
     private String name;
     private String position;
     private int salary;
     private LocalDateTime joinDate;
+
+    @ManyToOne
+    private Company company;
+
+    public Employee() {
+    }
 
     public Employee(long id, String name, String position, int salary, LocalDateTime joinDate) {
         this.id = id;
@@ -18,7 +31,11 @@ public class Employee {
         this.joinDate = joinDate;
     }
 
-    public Employee() {
+    public Employee(String name, String position, int salary, LocalDateTime joinDate) {
+        this.name = name;
+        this.position = position;
+        this.salary = salary;
+        this.joinDate = joinDate;
     }
 
     public long getId() {
@@ -59,5 +76,26 @@ public class Employee {
 
     public void setJoinDate(LocalDateTime joinDate) {
         this.joinDate = joinDate;
+    }
+
+    public Company getCompany() {
+        return company;
+    }
+
+    public void setCompany(Company company) {
+        this.company = company;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Employee employee = (Employee) o;
+        return salary == employee.salary && name.equals(employee.name) && position.equals(employee.position) && joinDate.equals(employee.joinDate) && Objects.equals(company, employee.company);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(name, position, salary, joinDate, company);
     }
 }

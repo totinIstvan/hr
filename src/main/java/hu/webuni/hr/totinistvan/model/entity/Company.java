@@ -1,24 +1,39 @@
 package hu.webuni.hr.totinistvan.model.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
+import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
+@Entity
 public class Company {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
     private String registrationNumber;
     private String name;
     private String address;
 
+    @JsonIgnore
+    @OneToMany(mappedBy = "company", cascade = {CascadeType.REMOVE, CascadeType.MERGE, CascadeType.PERSIST})
     private List<Employee> employees = new ArrayList<>();
 
-    public Company(long id, String name, String registrationNumber, String address) {
+    public Company() {
+    }
+
+    public Company(long id, String registrationNumber, String name, String address) {
         this.id = id;
         this.registrationNumber = registrationNumber;
         this.name = name;
         this.address = address;
     }
 
-    public Company() {
+    public Company(String registrationNumber, String name, String address) {
+        this.registrationNumber = registrationNumber;
+        this.name = name;
+        this.address = address;
     }
 
     public long getId() {
@@ -59,5 +74,14 @@ public class Company {
 
     public void setEmployees(List<Employee> employees) {
         this.employees = employees;
+    }
+
+    public void addEmployee(Employee employee) {
+        if (!employees.contains(employee)) {
+            employees.add(employee);
+            employee.setCompany(this);
+        } else {
+            throw new IllegalArgumentException("Employee with id " + employee.getId() + " already exists!");
+        }
     }
 }

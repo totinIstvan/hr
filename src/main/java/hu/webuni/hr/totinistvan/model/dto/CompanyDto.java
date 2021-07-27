@@ -18,13 +18,6 @@ public class CompanyDto {
 
     private List<EmployeeDto> employees = new ArrayList<>();
 
-    public CompanyDto(long id, String name, String registrationNumber, String address) {
-        this.id = id;
-        this.registrationNumber = registrationNumber;
-        this.name = name;
-        this.address = address;
-    }
-
     public CompanyDto() {
     }
 
