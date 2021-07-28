@@ -9,7 +9,6 @@ import hu.webuni.hr.totinistvan.model.dto.Views;
 import hu.webuni.hr.totinistvan.model.entity.Company;
 import hu.webuni.hr.totinistvan.model.entity.Employee;
 import hu.webuni.hr.totinistvan.service.CompanyService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -61,8 +60,7 @@ public class CompanyController {
 
     @PostMapping
     public CompanyDto addNew(@RequestBody CompanyDto companyDto) {
-        Company company = companyMapper.companyDtoToCompany(companyDto);
-        companyService.save(company);
+        Company company = companyService.save(companyMapper.companyDtoToCompany(companyDto));
         List<Employee> employees = employeeMapper.employeeDtosToEmployees(companyDto.getEmployees());
         company.setEmployees(employees);
         return companyMapper.companyToDto(company);

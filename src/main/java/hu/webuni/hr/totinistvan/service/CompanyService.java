@@ -80,8 +80,8 @@ public class CompanyService {
     public List<Employee> updateEmployees(long companyId, List<Employee> newEmployees) {
         if (companyRepository.existsById(companyId)) {
             Company company = companyRepository.findById(companyId).get();
+            company.getEmployees().forEach(e -> e.setCompany(null));
             newEmployees.forEach(e -> e.setCompany(company));
-            company.getEmployees().clear();
             company.setEmployees(newEmployees);
             companyRepository.save(company);
             return newEmployees;
