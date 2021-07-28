@@ -4,8 +4,6 @@ import hu.webuni.hr.totinistvan.mapper.EmployeeMapper;
 import hu.webuni.hr.totinistvan.model.dto.EmployeeDto;
 import hu.webuni.hr.totinistvan.model.entity.Employee;
 import hu.webuni.hr.totinistvan.service.EmployeeService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
@@ -27,8 +25,6 @@ public class EmployeeController {
 
     @Autowired
     private EmployeeMapper employeeMapper;
-
-    private Logger log = LoggerFactory.getLogger(EmployeeController.class);
 
     @GetMapping
     public List<EmployeeDto> getAll() {

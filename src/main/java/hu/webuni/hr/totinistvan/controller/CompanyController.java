@@ -21,14 +21,17 @@ import java.util.*;
 @RequestMapping("/api/companies")
 public class CompanyController {
 
-    @Autowired
-    private CompanyService companyService;
+    private final CompanyService companyService;
 
-    @Autowired
-    private CompanyMapper companyMapper;
+    private final CompanyMapper companyMapper;
 
-    @Autowired
-    private EmployeeMapper employeeMapper;
+    private final EmployeeMapper employeeMapper;
+
+    public CompanyController(CompanyService companyService, CompanyMapper companyMapper, EmployeeMapper employeeMapper) {
+        this.companyService = companyService;
+        this.companyMapper = companyMapper;
+        this.employeeMapper = employeeMapper;
+    }
 
     @GetMapping
     @JsonView(Views.BaseData.class)
@@ -88,14 +91,6 @@ public class CompanyController {
 
     @PutMapping("/{company_id}/new_employee")
     public ResponseEntity<EmployeeDto> addEmployee(@PathVariable("company_id") long companyId, @RequestBody EmployeeDto employeeDto) {
-//        Company company = companyService.getById(companyId);
-
-//        if (company != null) {
-//            Employee employee = companyService.addEmployee(companyId, employeeMapper.employeeDtoToEmployee(employeeDto));
-//            return employeeMapper.employeeToDto(employee);
-//        }
-//        throw new ResponseStatusException(HttpStatus.NOT_FOUND);
-
         try {
             return ResponseEntity.ok(employeeMapper.employeeToDto(companyService.addEmployee(companyId, employeeMapper.employeeDtoToEmployee(employeeDto))));
         } catch (NoSuchElementException e) {
@@ -107,18 +102,6 @@ public class CompanyController {
 
     @DeleteMapping("/{company_id}/employee/{employee_id}")
     public void removeEmployee(@PathVariable("company_id") long companyId, @PathVariable("employee_id") long employeeId) {
-//        Company company = companyService.getById(companyId);
-//        Optional<Employee> employee = Optional.empty();
-//
-//        if (company != null) {
-//            employee = companyService.findById(company, employeeId);
-//        }
-//
-//        if (employee.isPresent()) {
-//            companyService.deleteEmployee(companyId, employeeId);
-//        } else {
-//            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
-//        }
         try {
             companyService.removeEmployee(companyId, employeeId);
         } catch (NoSuchElementException e) {
@@ -128,7 +111,6 @@ public class CompanyController {
 
     @PutMapping("/{company_id}/employeeList")
     public List<Employee> replaceEmployeeList(@PathVariable("company_id") long companyId, @RequestBody List<EmployeeDto> newEmployees) {
-//        Company company = companyService.findById(companyId);
         List<Employee> employees = employeeMapper.employeeDtosToEmployees(newEmployees);
         try {
             return companyService.updateEmployees(companyId, employees);
