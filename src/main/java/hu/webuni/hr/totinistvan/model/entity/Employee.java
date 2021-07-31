@@ -1,7 +1,5 @@
 package hu.webuni.hr.totinistvan.model.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.Objects;

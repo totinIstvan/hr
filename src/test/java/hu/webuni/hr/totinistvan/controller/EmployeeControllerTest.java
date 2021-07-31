@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.test.web.reactive.server.WebTestClient;
+import org.springframework.test.web.reactive.server.WebTestClient.ResponseSpec;
 
 import java.time.LocalDateTime;
 import java.util.Comparator;
@@ -29,9 +30,13 @@ public class EmployeeControllerTest {
         long id = employeesBefore.size() + 1;
 
         EmployeeDto employee = new EmployeeDto(id, "Jason Doe", "CBO", 1_000_000, LocalDateTime.of(2017, 2, 4, 8, 0, 0));
-        createEmployee(employee);
+        createEmployee(employee)
+                .expectStatus()
+                .isOk();
 
         List<EmployeeDto> employeesAfter = getAllEmployees();
+
+        assertEquals(employeesAfter.size(), employeesBefore.size() + 1);
 
         assertThat(employeesAfter.subList(0, employeesBefore.size()))
                 .usingRecursiveFieldByFieldElementComparator()
@@ -43,14 +48,26 @@ public class EmployeeControllerTest {
     }
 
     @Test
-    void addNew_addEmployeeWithInvalidJoinDate_throwsAssertionError() {
-        EmployeeDto employee = new EmployeeDto(4, "Jason Doe", "CBO", 1_000_000, LocalDateTime.of(2034, 2, 4, 8, 0, 0));
+    void addNew_addEmployeeWithInvalidJoinDate_returnsBadRequest() {
+        List<EmployeeDto> employeesBefore = getAllEmployees();
 
-        assertThrows(AssertionError.class, () -> createEmployee(employee));
+        long id = employeesBefore.size() + 1;
+
+        EmployeeDto employee = new EmployeeDto(id, "Jason Doe", "CBO", 1_000_000, LocalDateTime.of(2034, 2, 4, 8, 0, 0));
+
+        createEmployee(employee)
+                .expectStatus()
+                .isBadRequest();
+
+        List<EmployeeDto> employeesAfter = getAllEmployees();
+
+        assertThat(employeesAfter)
+                .usingRecursiveFieldByFieldElementComparator()
+                .containsExactlyElementsOf(employeesBefore);
     }
 
     @Test
-    void update_updateEmployeeWithValidData_returnsUpdated() {
+    void update_updateEmployeeWithValidData_returnsUpdatedEmployee() {
         long id = getAllEmployees().size() + 1;
         EmployeeDto employee = new EmployeeDto(id, "Jason Doe", "CBO", 1_000_000, LocalDateTime.of(2017, 2, 4, 8, 0, 0));
         createEmployee(employee);
@@ -70,30 +87,44 @@ public class EmployeeControllerTest {
     }
 
     @Test
-    void update_updateEmployeeWithInvalidData_throwsAssertionError() {
+    void update_updateEmployeeWithInvalidData_returnsBadRequest() {
         long id = getAllEmployees().size() + 1;
+        EmployeeDto employee = new EmployeeDto(id, "Jason Doe", "CBO", 1_000_000, LocalDateTime.of(2017, 2, 4, 8, 0, 0));
+        EmployeeDto savedEmployee = createEmployee(employee)
+                .expectStatus()
+                .isOk()
+                .expectBody(EmployeeDto.class)
+                .returnResult()
+                .getResponseBody();
+
+        List<EmployeeDto> employeesBefore = getAllEmployees();
+
         EmployeeDto newEmployee = new EmployeeDto(id, "Julia Doe", "", 1_200_000, LocalDateTime.of(2021, 7,19,8,0,0));
-        assertThrows(AssertionError.class, () -> updateEmployee(id, newEmployee));
+        updateEmployee(id, newEmployee)
+                .expectStatus()
+                .isBadRequest();
+        List<EmployeeDto> employeesAfter = getAllEmployees();
+
+        assertEquals(employeesAfter.size(), employeesBefore.size());
+        assertThat(employeesAfter.get(employeesAfter.size() -1))
+                .usingRecursiveComparison()
+                .isEqualTo(employee);
     }
 
-    private void createEmployee(EmployeeDto employee) {
-        webTestClient
+    private ResponseSpec createEmployee(EmployeeDto employee) {
+        return webTestClient
                 .post()
                 .uri(BASE_URI)
                 .bodyValue(employee)
-                .exchange()
-                .expectStatus()
-                .isOk();
+                .exchange();
     }
 
-    private void updateEmployee(long id, EmployeeDto employee) {
-        webTestClient
+    private ResponseSpec updateEmployee(long id, EmployeeDto employee) {
+        return webTestClient
                 .put()
                 .uri(BASE_URI + "/" + id)
                 .bodyValue(employee)
-                .exchange()
-                .expectStatus()
-                .isOk();
+                .exchange();
     }
 
     private List<EmployeeDto> getAllEmployees() {

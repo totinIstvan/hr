@@ -40,13 +40,7 @@ public class EmployeeController {
 
     @PostMapping
     public EmployeeDto addNew(@RequestBody @Valid EmployeeDto employeeDto) {
-        try {
-            Employee employee = employeeMapper.employeeDtoToEmployee(employeeDto);
-            return employeeMapper.employeeToDto(employeeService.save(employee));
-        } catch (IllegalArgumentException e) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
-        }
-
+        return employeeMapper.employeeToDto(employeeService.save(employeeMapper.employeeDtoToEmployee(employeeDto)));
     }
 
     @PutMapping("/{id}")
