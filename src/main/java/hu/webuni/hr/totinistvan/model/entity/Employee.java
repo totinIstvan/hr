@@ -3,16 +3,20 @@ package hu.webuni.hr.totinistvan.model.entity;
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.Objects;
-
 @Entity
 public class Employee {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
+
     private String name;
-    private String position;
+
+    @ManyToOne
+    private Position position;
+
     private int salary;
+
     private LocalDateTime joinDate;
 
     @ManyToOne
@@ -21,17 +25,15 @@ public class Employee {
     public Employee() {
     }
 
-    public Employee(long id, String name, String position, int salary, LocalDateTime joinDate) {
+    public Employee(long id, String name, int salary, LocalDateTime joinDate) {
         this.id = id;
         this.name = name;
-        this.position = position;
         this.salary = salary;
         this.joinDate = joinDate;
     }
 
-    public Employee(String name, String position, int salary, LocalDateTime joinDate) {
+    public Employee(String name, int salary, LocalDateTime joinDate) {
         this.name = name;
-        this.position = position;
         this.salary = salary;
         this.joinDate = joinDate;
     }
@@ -52,11 +54,11 @@ public class Employee {
         this.name = name;
     }
 
-    public String getPosition() {
+    public Position getPosition() {
         return position;
     }
 
-    public void setPosition(String position) {
+    public void setPosition(Position position) {
         this.position = position;
     }
 

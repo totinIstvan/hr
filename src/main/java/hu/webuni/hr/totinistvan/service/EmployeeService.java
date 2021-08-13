@@ -3,6 +3,8 @@ package hu.webuni.hr.totinistvan.service;
 import hu.webuni.hr.totinistvan.model.entity.Employee;
 import hu.webuni.hr.totinistvan.repository.EmployeeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -43,12 +45,12 @@ public abstract class EmployeeService {
         employeeRepository.deleteById(id);
     }
 
-    public List<Employee> getWithHigherSalaryThanLimit(int limit) {
-        return employeeRepository.getAllBySalaryAfter(limit);
+    public Page<Employee> getWithHigherSalaryThanLimit(int limit, Pageable pageable) {
+        return employeeRepository.getAllBySalaryAfter(limit, pageable);
     }
 
-    public List<Employee> getEmployeesByPosition(String position) {
-        return employeeRepository.getEmployeesByPosition(position);
+    public List<Employee> getEmployeesByPositionName(String position) {
+        return employeeRepository.getEmployeesByPositionName(position);
     }
 
     public List<Employee> getEmployeesByNameStartingWith(String s) {

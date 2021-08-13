@@ -15,11 +15,11 @@ public class EmployeeTLController {
 
     private List<Employee> employees = new ArrayList<>();
 
-    {
-        employees.add(new Employee(1L, "John Doe", "CEO", 1_500_000, LocalDateTime.of(1980, 6, 15, 8, 0, 0)));
-        employees.add(new Employee(2L, "Jack Doe", "CTO", 1_000_000, LocalDateTime.of(2012, 9, 10, 8, 0, 0)));
-        employees.add(new Employee(3L, "Jane Doe", "CMO", 1_000_000, LocalDateTime.of(2017, 12, 3, 8, 0, 0)));
-    }
+//    {
+//        employees.add(new Employee(1L, "John Doe", "CEO", 1_500_000, LocalDateTime.of(1980, 6, 15, 8, 0, 0)));
+//        employees.add(new Employee(2L, "Jack Doe", "CTO", 1_000_000, LocalDateTime.of(2012, 9, 10, 8, 0, 0)));
+//        employees.add(new Employee(3L, "Jane Doe", "CMO", 1_000_000, LocalDateTime.of(2017, 12, 3, 8, 0, 0)));
+//    }
 
     @GetMapping
     public String listEmployees(Map<String, Object> model) {

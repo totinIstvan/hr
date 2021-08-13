@@ -5,6 +5,8 @@ import hu.webuni.hr.totinistvan.model.dto.EmployeeDto;
 import hu.webuni.hr.totinistvan.model.entity.Employee;
 import hu.webuni.hr.totinistvan.service.EmployeeService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -65,14 +67,18 @@ public class EmployeeController {
     }
 
     @GetMapping("/limit")
-    public List<EmployeeDto> getWithHigherSalaryThanLimit(@RequestParam int limit) {
-        List<Employee> employees = employeeService.getWithHigherSalaryThanLimit(limit);
-        return employeeMapper.employeesToDtos(employees);
+    public List<EmployeeDto> getWithHigherSalaryThanLimit(@RequestParam int limit, Pageable pageable) {
+        Page<Employee> employees = employeeService.getWithHigherSalaryThanLimit(limit, pageable);
+        System.out.println(employees.getTotalElements());
+        System.out.println(employees.getTotalPages());
+        System.out.println(employees.isFirst());
+        System.out.println(employees.isLast());
+        return employeeMapper.employeesToDtos(employees.getContent());
     }
 
     @GetMapping("/position/{position}")
     public List<EmployeeDto> getEmployeesByPosition(@PathVariable String position) {
-        return employeeMapper.employeesToDtos(employeeService.getEmployeesByPosition(position));
+        return employeeMapper.employeesToDtos(employeeService.getEmployeesByPositionName(position));
     }
 
     @GetMapping("/name_starts/{s}")

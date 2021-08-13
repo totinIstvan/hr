@@ -1,6 +1,6 @@
 package hu.webuni.hr.totinistvan.model.dto;
 
-import hu.webuni.hr.totinistvan.model.CompanyType;
+import hu.webuni.hr.totinistvan.model.entity.CompanyType;
 
 import java.util.ArrayList;
 import java.util.List;

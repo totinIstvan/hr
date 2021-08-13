@@ -1,7 +1,5 @@
 package hu.webuni.hr.totinistvan.model.entity;
 
-import hu.webuni.hr.totinistvan.model.CompanyType;
-
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -15,20 +13,15 @@ public class Company {
     private String registrationNumber;
     private String name;
     private String address;
-    @Enumerated(value = EnumType.STRING)
+
+//    @Enumerated(value = EnumType.STRING)
+    @ManyToOne
     private CompanyType companyType;
 
     @OneToMany(mappedBy = "company", cascade = {CascadeType.REMOVE, CascadeType.MERGE, CascadeType.PERSIST})
     private List<Employee> employees = new ArrayList<>();
 
     public Company() {
-    }
-
-    public Company(long id, String registrationNumber, String name, String address) {
-        this.id = id;
-        this.registrationNumber = registrationNumber;
-        this.name = name;
-        this.address = address;
     }
 
     public Company(String registrationNumber, String name, String address) {
