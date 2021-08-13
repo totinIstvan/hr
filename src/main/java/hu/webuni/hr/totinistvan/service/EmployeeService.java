@@ -43,7 +43,7 @@ public abstract class EmployeeService {
         employeeRepository.deleteById(id);
     }
 
-    public List<Employee> getWithHigherSalary(int limit) {
+    public List<Employee> getWithHigherSalaryThanLimit(int limit) {
         return employeeRepository.getAllBySalaryAfter(limit);
     }
 

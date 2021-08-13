@@ -1,11 +1,10 @@
 package hu.webuni.hr.totinistvan.controller;
 
-import com.fasterxml.jackson.annotation.JsonView;
 import hu.webuni.hr.totinistvan.mapper.CompanyMapper;
 import hu.webuni.hr.totinistvan.mapper.EmployeeMapper;
+import hu.webuni.hr.totinistvan.model.AvgSalaryForPosition;
 import hu.webuni.hr.totinistvan.model.dto.CompanyDto;
 import hu.webuni.hr.totinistvan.model.dto.EmployeeDto;
-import hu.webuni.hr.totinistvan.model.dto.Views;
 import hu.webuni.hr.totinistvan.model.entity.Company;
 import hu.webuni.hr.totinistvan.model.entity.Employee;
 import hu.webuni.hr.totinistvan.service.CompanyService;
@@ -33,28 +32,26 @@ public class CompanyController {
     }
 
     @GetMapping
-    @JsonView(Views.BaseData.class)
-    public List<CompanyDto> getCompaniesWithoutEmployees() {
-        return companyMapper.companiesToDtos(companyService.findAll());
+    public List<CompanyDto> getAll(@RequestParam(required = false) Boolean full) {
+        List<Company> companies = companyService.findAll();
+        return mapCompanies(companies, full);
     }
 
-    @GetMapping(params = "full=true")
-    public List<CompanyDto> getAll() {
-        return companyMapper.companiesToDtos(companyService.findAll());
+    private List<CompanyDto> mapCompanies(List<Company> companies, Boolean full) {
+        if (full == null || !full) {
+            return companyMapper.companiesToSummaryDtos(companies);
+        } else {
+            return companyMapper.companiesToDtos(companies);
+        }
     }
 
-    @GetMapping("/{id}")
-    @JsonView(Views.BaseData.class)
-    public CompanyDto getCompanyWithoutEmployeesById(@PathVariable long id) {
+    @GetMapping(path = "/{id}")
+    public CompanyDto getById(@PathVariable long id, @RequestParam(required = false) Boolean full) {
         Company company = companyService.findById(id)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
-        return companyMapper.companyToDto(company);
-    }
-
-    @GetMapping(path = "/{id}", params = "full=true")
-    public CompanyDto getById(@PathVariable long id) {
-        Company company = companyService.findById(id)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Company with id " + id + " not found"));
+        if (full == null || !full) {
+            return companyMapper.companyToSummaryDto(company);
+        }
         return companyMapper.companyToDto(company);
     }
 
@@ -108,12 +105,29 @@ public class CompanyController {
     }
 
     @PutMapping("/{company_id}/employeeList")
-    public List<Employee> replaceEmployeeList(@PathVariable("company_id") long companyId, @RequestBody List<EmployeeDto> newEmployees) {
+    public CompanyDto replaceAllEmployees(@PathVariable("company_id") long companyId, @RequestBody List<EmployeeDto> newEmployees) {
         List<Employee> employees = employeeMapper.employeeDtosToEmployees(newEmployees);
         try {
-            return companyService.updateEmployees(companyId, employees);
+            return companyMapper.companyToDto(companyService.updateEmployees(companyId, employees));
         } catch (NoSuchElementException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Company with id " + companyId + " not found");
         }
+    }
+
+    @GetMapping("/withHigherSalaryThan")
+    public List<CompanyDto> getCompaniesWithSalariesHigherThanLimit(@RequestParam int limit, @RequestParam(required = false) Boolean full) {
+        List<Company> companies = companyService.getCompaniesWithSalariesHigherThanLimit(limit);
+        return mapCompanies(companies, full);
+    }
+
+    @GetMapping("/moreEmployeesThan")
+    public List<CompanyDto> getCompaniesWithNumberOfEmployeesMoreThanLimit(@RequestParam int limit, @RequestParam(required = false) Boolean full) {
+        List<Company> companies = companyService.getCompaniesWithNumberOfEmployeesMoreThanLimit(limit);
+        return mapCompanies(companies, full);
+    }
+
+    @GetMapping("/averageSalaries/{companyId}")
+    public List<AvgSalaryForPosition> averageSalaryOfEmployeesOfSpecifiedCompanyByPosition(@PathVariable long companyId) {
+        return companyService.averageSalaryOfEmployeesOfSpecifiedCompanyByPosition(companyId);
     }
 }

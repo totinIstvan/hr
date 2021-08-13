@@ -7,13 +7,12 @@ import java.util.List;
 
 public class CompanyDto {
 
-    @JsonView(Views.BaseData.class)
     private long id;
-    @JsonView(Views.BaseData.class)
+
     private String registrationNumber;
-    @JsonView(Views.BaseData.class)
+
     private String name;
-    @JsonView(Views.BaseData.class)
+
     private String address;
 
     private List<EmployeeDto> employees = new ArrayList<>();

@@ -65,8 +65,8 @@ public class EmployeeController {
     }
 
     @GetMapping("/limit")
-    public List<EmployeeDto> getWithHigherSalary(@RequestParam int limit) {
-        List<Employee> employees = employeeService.getWithHigherSalary(limit);
+    public List<EmployeeDto> getWithHigherSalaryThanLimit(@RequestParam int limit) {
+        List<Employee> employees = employeeService.getWithHigherSalaryThanLimit(limit);
         return employeeMapper.employeesToDtos(employees);
     }
 

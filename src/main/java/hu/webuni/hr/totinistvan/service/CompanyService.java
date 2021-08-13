@@ -1,5 +1,6 @@
 package hu.webuni.hr.totinistvan.service;
 
+import hu.webuni.hr.totinistvan.model.AvgSalaryForPosition;
 import hu.webuni.hr.totinistvan.model.entity.Company;
 import hu.webuni.hr.totinistvan.model.entity.Employee;
 import hu.webuni.hr.totinistvan.repository.CompanyRepository;
@@ -77,16 +78,27 @@ public class CompanyService {
     }
 
     @Transactional
-    public List<Employee> updateEmployees(long companyId, List<Employee> newEmployees) {
+    public Company updateEmployees(long companyId, List<Employee> newEmployees) {
         if (companyRepository.existsById(companyId)) {
             Company company = companyRepository.findById(companyId).get();
             company.getEmployees().forEach(e -> e.setCompany(null));
             newEmployees.forEach(e -> e.setCompany(company));
             company.setEmployees(newEmployees);
-            companyRepository.save(company);
-            return newEmployees;
+            return companyRepository.save(company);
         } else {
             throw new NoSuchElementException();
         }
+    }
+
+    public List<Company> getCompaniesWithSalariesHigherThanLimit(int limit) {
+        return companyRepository.getCompaniesWithSalariesHigherThanLimit(limit);
+    }
+
+    public List<Company> getCompaniesWithNumberOfEmployeesMoreThanLimit(int limit) {
+        return companyRepository.getCompaniesWithNumberOfEmployeesMoreThanLimit(limit);
+    }
+
+    public List<AvgSalaryForPosition> averageSalaryOfEmployeesOfSpecifiedCompanyByPosition(long companyId) {
+        return companyRepository.averageSalaryOfEmployeesOfSpecifiedCompanyByPositions(companyId);
     }
 }
