@@ -53,6 +53,14 @@ public class Position {
         this.minSalary = minSalary;
     }
 
+    public List<Employee> getEmployees() {
+        return employees;
+    }
+
+    public void setEmployees(List<Employee> employees) {
+        this.employees = employees;
+    }
+
     public Qualification getQualification() {
         return qualification;
     }

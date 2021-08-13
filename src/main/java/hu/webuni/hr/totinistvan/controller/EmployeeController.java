@@ -90,10 +90,4 @@ public class EmployeeController {
     public List<EmployeeDto> getEmployeesByJoinDateBetween(@PathVariable("s") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime start, @PathVariable("e") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime end) {
         return employeeMapper.employeesToDtos(employeeService.getEmployeesByJoinDateBetween(start, end));
     }
-
-    @PostMapping("/pay_raise_percent")
-    public int getPayRisePercent(@RequestBody EmployeeDto employeeDto) {
-        Employee employee = employeeMapper.employeeDtoToEmployee(employeeDto);
-        return employeeService.getPayRaisePercent(employee);
-    }
 }
