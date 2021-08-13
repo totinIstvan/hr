@@ -1,6 +1,6 @@
 package hu.webuni.hr.totinistvan.model.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import hu.webuni.hr.totinistvan.model.CompanyType;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -15,8 +15,9 @@ public class Company {
     private String registrationNumber;
     private String name;
     private String address;
+    @Enumerated(value = EnumType.STRING)
+    private CompanyType companyType;
 
-    @JsonIgnore
     @OneToMany(mappedBy = "company", cascade = {CascadeType.REMOVE, CascadeType.MERGE, CascadeType.PERSIST})
     private List<Employee> employees = new ArrayList<>();
 
@@ -74,6 +75,14 @@ public class Company {
 
     public void setEmployees(List<Employee> employees) {
         this.employees = employees;
+    }
+
+    public CompanyType getCompanyType() {
+        return companyType;
+    }
+
+    public void setCompanyType(CompanyType companyType) {
+        this.companyType = companyType;
     }
 
     public void addEmployee(Employee employee) {

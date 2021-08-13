@@ -1,6 +1,6 @@
 package hu.webuni.hr.totinistvan.model.dto;
 
-import com.fasterxml.jackson.annotation.JsonView;
+import hu.webuni.hr.totinistvan.model.CompanyType;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,6 +14,8 @@ public class CompanyDto {
     private String name;
 
     private String address;
+
+    private CompanyType companyType;
 
     private List<EmployeeDto> employees = new ArrayList<>();
 
@@ -58,6 +60,14 @@ public class CompanyDto {
 
     public void setEmployees(List<EmployeeDto> employees) {
         this.employees = employees;
+    }
+
+    public CompanyType getCompanyType() {
+        return companyType;
+    }
+
+    public void setCompanyType(CompanyType companyType) {
+        this.companyType = companyType;
     }
 
     @Override

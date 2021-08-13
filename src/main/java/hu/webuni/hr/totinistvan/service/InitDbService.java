@@ -1,5 +1,6 @@
 package hu.webuni.hr.totinistvan.service;
 
+import hu.webuni.hr.totinistvan.model.CompanyType;
 import hu.webuni.hr.totinistvan.model.entity.Company;
 import hu.webuni.hr.totinistvan.model.entity.Employee;
 import hu.webuni.hr.totinistvan.repository.CompanyRepository;
@@ -31,6 +32,10 @@ public class InitDbService {
         Company company1 = new Company("PD763549", "AllAccess Doe", "4615 First Ave. Pittsburg, PA 15342");
         Company company2 = new Company("PD167300", "Building Doe", "1768 Fifth Ave. New York, NY 10342");
         Company company3 = new Company("PH893881", "Luxury Doe", "1245 Eighth Ave. Philadelphia, PA 15872");
+
+        company1.setCompanyType(CompanyType.PLC);
+        company2.setCompanyType(CompanyType.LTD);
+        company3.setCompanyType(CompanyType.LP);
 
         Employee employee1 = new Employee("John Doe", "CEO", 15000, LocalDateTime.of(1980, 6, 15, 8, 0, 0));
         Employee employee2 = new Employee("Jack Doe", "CEO", 15000, LocalDateTime.of(1989, 10, 10, 8, 0, 0));
