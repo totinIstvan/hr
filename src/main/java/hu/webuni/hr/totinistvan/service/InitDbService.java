@@ -1,14 +1,8 @@
 package hu.webuni.hr.totinistvan.service;
 
 import hu.webuni.hr.totinistvan.model.Qualification;
-import hu.webuni.hr.totinistvan.model.entity.CompanyType;
-import hu.webuni.hr.totinistvan.model.entity.Company;
-import hu.webuni.hr.totinistvan.model.entity.Employee;
-import hu.webuni.hr.totinistvan.model.entity.Position;
-import hu.webuni.hr.totinistvan.repository.CompanyRepository;
-import hu.webuni.hr.totinistvan.repository.CompanyTypeRepository;
-import hu.webuni.hr.totinistvan.repository.EmployeeRepository;
-import hu.webuni.hr.totinistvan.repository.PositionRepository;
+import hu.webuni.hr.totinistvan.model.entity.*;
+import hu.webuni.hr.totinistvan.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -29,6 +23,9 @@ public class InitDbService {
 
     @Autowired
     private PositionRepository positionRepository;
+
+    @Autowired
+    private PositionByCompanyRepository positionByCompanyRepository;
 
     public void clearDb() {
         companyRepository.deleteAll();
@@ -55,10 +52,6 @@ public class InitDbService {
         company1.setCompanyType(cp1);
         company2.setCompanyType(cp2);
         company3.setCompanyType(cp3);
-
-//        company1.setCompanyType(CompanyType.PLC);
-//        company2.setCompanyType(CompanyType.LTD);
-//        company3.setCompanyType(CompanyType.LP);
 
         Position p1 = new Position("CEO", Qualification.UNIVERSITY);
         Position p2 = new Position("CMO", Qualification.UNIVERSITY);
@@ -104,14 +97,14 @@ public class InitDbService {
 
         company1.addEmployee(employee1);
         company1.addEmployee(employee4);
-        company1.addEmployee(employee7);
-        company1.addEmployee(employee10);
+        company1.addEmployee(employee5);
+        company1.addEmployee(employee9);
         company2.addEmployee(employee2);
-        company2.addEmployee(employee5);
+        company2.addEmployee(employee6);
+        company2.addEmployee(employee7);
         company2.addEmployee(employee8);
-        company2.addEmployee(employee11);
         company3.addEmployee(employee3);
-        company3.addEmployee(employee6);
-        company3.addEmployee(employee9);
+        company3.addEmployee(employee10);
+        company3.addEmployee(employee11);
     }
 }

@@ -14,8 +14,6 @@ public class Position {
 
     private String name;
 
-    private int minSalary;
-
     private Qualification qualification;
 
     @OneToMany(mappedBy = "position")
@@ -43,14 +41,6 @@ public class Position {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public int getMinSalary() {
-        return minSalary;
-    }
-
-    public void setMinSalary(int minSalary) {
-        this.minSalary = minSalary;
     }
 
     public List<Employee> getEmployees() {
