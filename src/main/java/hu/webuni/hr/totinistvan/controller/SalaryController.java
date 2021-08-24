@@ -9,36 +9,42 @@ import hu.webuni.hr.totinistvan.model.entity.PositionByCompany;
 import hu.webuni.hr.totinistvan.repository.PositionByCompanyRepository;
 import hu.webuni.hr.totinistvan.service.EmployeeService;
 import hu.webuni.hr.totinistvan.service.SalaryService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/salary")
 public class SalaryController {
 
-    @Autowired
-    private SalaryService salaryService;
+    private final SalaryService salaryService;
 
-    @Autowired
-    private EmployeeService employeeService;
+    private final EmployeeService employeeService;
 
-    @Autowired
-    private EmployeeMapper employeeMapper;
+    private final EmployeeMapper employeeMapper;
 
-    @Autowired
-    PositionByCompanyRepository positionByCompanyRepository;
+    private final PositionByCompanyRepository positionByCompanyRepository;
 
-    @Autowired
-    private PositionByCompanyMapper positionByCompanyMapper;
+    private final PositionByCompanyMapper positionByCompanyMapper;
+
+    public SalaryController(SalaryService salaryService,
+                            EmployeeService employeeService,
+                            EmployeeMapper employeeMapper,
+                            PositionByCompanyRepository positionByCompanyRepository,
+                            PositionByCompanyMapper positionByCompanyMapper) {
+        this.salaryService = salaryService;
+        this.employeeService = employeeService;
+        this.employeeMapper = employeeMapper;
+        this.positionByCompanyRepository = positionByCompanyRepository;
+        this.positionByCompanyMapper = positionByCompanyMapper;
+    }
 
     @PostMapping("/payraisePercent")
-    public int getPayRisePercent(@RequestBody EmployeeDto employeeDto) {
+    public int getPayRaisePercent(@RequestBody EmployeeDto employeeDto) {
         Employee employee = employeeMapper.employeeDtoToEmployee(employeeDto);
         return employeeService.getPayRaisePercent(employee);
     }
 
     @PutMapping("/minSalaryPayRaise")
-    public void minSalaryPayraiseByPosition(@RequestBody PositionByCompanyDto positionByCompanyDto) {
+    public void minSalaryPayRaiseByPosition(@RequestBody PositionByCompanyDto positionByCompanyDto) {
         PositionByCompany positionByCompany = positionByCompanyRepository.save(positionByCompanyMapper.dtoToPositionByCompany(positionByCompanyDto));
         salaryService.minSalaryPayRaise(positionByCompany);
     }

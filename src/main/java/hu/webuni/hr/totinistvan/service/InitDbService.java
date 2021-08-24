@@ -24,9 +24,6 @@ public class InitDbService {
     @Autowired
     private PositionRepository positionRepository;
 
-    @Autowired
-    private PositionByCompanyRepository positionByCompanyRepository;
-
     public void clearDb() {
         companyRepository.deleteAll();
         employeeRepository.deleteAll();
@@ -70,7 +67,7 @@ public class InitDbService {
         Employee employee1 = new Employee("John Doe",15000, LocalDateTime.of(1980, 6, 15, 8, 0, 0));
         Employee employee2 = new Employee("Jack Doe",15000, LocalDateTime.of(1989, 10, 10, 8, 0, 0));
         Employee employee3 = new Employee("Jason Doe",15000, LocalDateTime.of(1996, 3, 20, 8, 0, 0));
-        Employee employee4 = new Employee("Jane Doe",11000, LocalDateTime.of(2000, 11, 5, 8, 0, 0));
+        Employee employee4 = new Employee("Jane Doe",13000, LocalDateTime.of(2000, 11, 5, 8, 0, 0));
         Employee employee5 = new Employee("Jessica Doe", 11000, LocalDateTime.of(1990, 7, 25, 8, 0, 0));
         Employee employee6 = new Employee("Jake Doe", 11000, LocalDateTime.of(1999, 6, 15, 8, 0, 0));
         Employee employee7 = new Employee("Julia Doe", 10000, LocalDateTime.of(2012, 2, 10, 8, 0, 0));
@@ -83,7 +80,7 @@ public class InitDbService {
         employee2.setPosition(p1);
         employee3.setPosition(p1);
         employee4.setPosition(p3);
-        employee5.setPosition(p2);
+        employee5.setPosition(p6);
         employee6.setPosition(p5);
         employee7.setPosition(p6);
         employee8.setPosition(p4);

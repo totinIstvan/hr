@@ -3,6 +3,8 @@ package hu.webuni.hr.totinistvan.model.entity;
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.Objects;
+
+@NamedEntityGraph(name = "Employee.position", attributeNodes = @NamedAttributeNode("position"))
 @Entity
 public class Employee {
 
@@ -34,6 +36,13 @@ public class Employee {
 
     public Employee(String name, int salary, LocalDateTime joinDate) {
         this.name = name;
+        this.salary = salary;
+        this.joinDate = joinDate;
+    }
+
+    public Employee(String name, Position position, int salary, LocalDateTime joinDate) {
+        this.name = name;
+        this.position = position;
         this.salary = salary;
         this.joinDate = joinDate;
     }

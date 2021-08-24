@@ -1,9 +1,11 @@
 package hu.webuni.hr.totinistvan.model.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import hu.webuni.hr.totinistvan.model.entity.Position;
 
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Past;
 import java.time.LocalDateTime;
 
@@ -12,8 +14,10 @@ public class EmployeeDto {
     private long id;
     @NotBlank
     private String name;
-    @NotBlank
-    private String position;
+//    @NotBlank
+//    private String position;
+    @NotNull
+    private Position position;
     @Min(0)
     private int salary;
     @Past
@@ -22,9 +26,23 @@ public class EmployeeDto {
     @JsonIgnore
     private CompanyDto companyDto;
 
-    public EmployeeDto(long id, String name, String position, int salary, LocalDateTime joinDate) {
+    public EmployeeDto(long id, String name, Position position, int salary, LocalDateTime joinDate) {
         this.id = id;
 
+        this.name = name;
+        this.position = position;
+        this.salary = salary;
+        this.joinDate = joinDate;
+    }
+
+    public EmployeeDto(long id, String name, int salary, LocalDateTime joinDate) {
+        this.id = id;
+        this.name = name;
+        this.salary = salary;
+        this.joinDate = joinDate;
+    }
+
+    public EmployeeDto(String name, Position position, int salary, LocalDateTime joinDate) {
         this.name = name;
         this.position = position;
         this.salary = salary;
@@ -50,11 +68,11 @@ public class EmployeeDto {
         this.name = name;
     }
 
-    public String getPosition() {
+    public Position getPosition() {
         return position;
     }
 
-    public void setPosition(String position) {
+    public void setPosition(Position position) {
         this.position = position;
     }
 

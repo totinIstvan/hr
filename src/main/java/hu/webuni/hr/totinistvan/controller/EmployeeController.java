@@ -3,6 +3,8 @@ package hu.webuni.hr.totinistvan.controller;
 import hu.webuni.hr.totinistvan.mapper.EmployeeMapper;
 import hu.webuni.hr.totinistvan.model.dto.EmployeeDto;
 import hu.webuni.hr.totinistvan.model.entity.Employee;
+import hu.webuni.hr.totinistvan.model.entity.Position;
+import hu.webuni.hr.totinistvan.repository.PositionRepository;
 import hu.webuni.hr.totinistvan.service.EmployeeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -22,11 +24,17 @@ import java.util.NoSuchElementException;
 @RequestMapping("/api/employees")
 public class EmployeeController {
 
-    @Autowired
-    private EmployeeService employeeService;
+    private final EmployeeService employeeService;
 
-    @Autowired
-    private EmployeeMapper employeeMapper;
+    private final EmployeeMapper employeeMapper;
+
+    private final PositionRepository positionRepository;
+
+    public EmployeeController(EmployeeService employeeService, EmployeeMapper employeeMapper, PositionRepository positionRepository) {
+        this.employeeService = employeeService;
+        this.employeeMapper = employeeMapper;
+        this.positionRepository = positionRepository;
+    }
 
     @GetMapping
     public List<EmployeeDto> getAll() {
@@ -42,6 +50,7 @@ public class EmployeeController {
 
     @PostMapping
     public EmployeeDto addNew(@RequestBody @Valid EmployeeDto employeeDto) {
+        positionRepository.save(new Position(employeeDto.getPosition().getName()));
         return employeeMapper.employeeToDto(employeeService.save(employeeMapper.employeeDtoToEmployee(employeeDto)));
     }
 

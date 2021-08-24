@@ -33,7 +33,13 @@ public class CompanyController {
 
     @GetMapping
     public List<CompanyDto> getAll(@RequestParam(required = false) Boolean full) {
-        List<Company> companies = companyService.findAll();
+        List<Company> companies;
+        boolean notFull = (full == null || !full);
+        if (notFull) {
+            companies = companyService.findAll();
+        } else {
+            companies = companyService.findAllWithEmployees();
+        }
         return mapCompanies(companies, full);
     }
 
@@ -47,8 +53,19 @@ public class CompanyController {
 
     @GetMapping(path = "/{id}")
     public CompanyDto getById(@PathVariable long id, @RequestParam(required = false) Boolean full) {
-        Company company = companyService.findById(id)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Company with id " + id + " not found"));
+        Company company;
+        boolean notFull = (full == null || !full);
+        if (notFull) {
+            company = companyService.findById(id)
+                    .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Company with id " + id + " not found"));
+        } else {
+            company = companyService.findByIdWithEmployees(id)
+                    .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Company with id " + id + " not found"));
+        }
+        return mapCompany(company, full);
+    }
+
+    private CompanyDto mapCompany(Company company, Boolean full) {
         if (full == null || !full) {
             return companyMapper.companyToSummaryDto(company);
         }
@@ -116,13 +133,25 @@ public class CompanyController {
 
     @GetMapping("/withHigherSalaryThan")
     public List<CompanyDto> getCompaniesWithSalariesHigherThanLimit(@RequestParam int limit, @RequestParam(required = false) Boolean full) {
-        List<Company> companies = companyService.getCompaniesWithSalariesHigherThanLimit(limit);
+        List<Company> companies;
+        boolean notFull = (full == null || !full);
+        if (notFull) {
+            companies = companyService.getCompaniesWithSalariesHigherThanLimit(limit);
+        } else {
+            companies = companyService.getCompaniesWithSalariesHigherThanLimitWithEmployees(limit);
+        }
         return mapCompanies(companies, full);
     }
 
     @GetMapping("/moreEmployeesThan")
     public List<CompanyDto> getCompaniesWithNumberOfEmployeesMoreThanLimit(@RequestParam int limit, @RequestParam(required = false) Boolean full) {
-        List<Company> companies = companyService.getCompaniesWithNumberOfEmployeesMoreThanLimit(limit);
+        List<Company> companies;
+        boolean notFull = (full == null || !full);
+        if (notFull) {
+            companies = companyService.getCompaniesWithNumberOfEmployeesMoreThanLimit(limit);
+        } else {
+            companies = companyService.getCompaniesWithNumberOfEmployeesMoreThanLimitWithEmployees(limit);
+        }
         return mapCompanies(companies, full);
     }
 

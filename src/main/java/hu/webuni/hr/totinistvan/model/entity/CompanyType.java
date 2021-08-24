@@ -1,14 +1,8 @@
 package hu.webuni.hr.totinistvan.model.entity;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 
-/*public enum CompanyType{
-    LP, LLC, LTD, PLC
-}*/
-
+@NamedEntityGraph(name = "Company.type", attributeNodes = @NamedAttributeNode("name"))
 @Entity
 public class CompanyType {
 

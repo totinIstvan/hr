@@ -36,9 +36,6 @@ public class SalaryService {
         String positionName = positionRepository.findById(positionByCompany.getPosition().getId()).get().getName();
         int minSalary = positionByCompany.getMinSalary();
         long companyId = positionByCompany.getCompany().getId();
-        System.out.println(positionName);
-        System.out.println(minSalary);
-        System.out.println(companyId);
         employeeRepository.updateSalaries(positionName, minSalary, companyId);
     }
 }

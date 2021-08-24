@@ -27,9 +27,7 @@ public interface CompanyMapper {
     @IterableMapping(qualifiedByName = "summary")
     List<CompanyDto> companiesToSummaryDtos(List<Company> companies);
 
-    @Mapping(target = "position", source = "position.name")
     EmployeeDto employeeToDto(Employee employee);
 
-    @Mapping(source = "position", target = "position.name")
     Employee employeeDtoToEmployee(EmployeeDto employeeDto);
 }

@@ -1,8 +1,10 @@
 package hu.webuni.hr.totinistvan.controller;
 
 import hu.webuni.hr.totinistvan.model.dto.EmployeeDto;
+import hu.webuni.hr.totinistvan.model.entity.Position;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.test.web.reactive.server.WebTestClient;
@@ -16,6 +18,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
+@AutoConfigureTestDatabase
 public class EmployeeControllerTest {
 
     private static final String BASE_URI = "/api/employees";
@@ -23,13 +26,15 @@ public class EmployeeControllerTest {
     @Autowired
     private WebTestClient webTestClient;
 
+    Position position = new Position("CBO");
+
     @Test
     void addNew_addEmployeeWithValidData_returnsCorrectResults() {
         List<EmployeeDto> employeesBefore = getAllEmployees();
 
         long id = employeesBefore.size() + 1;
 
-        EmployeeDto employee = new EmployeeDto(id, "Jason Doe", "CBO", 1_000_000, LocalDateTime.of(2017, 2, 4, 8, 0, 0));
+        EmployeeDto employee = new EmployeeDto(id, "Jason Doe", position, 1_000_000, LocalDateTime.of(2017, 2, 4, 8, 0, 0));
         createEmployee(employee)
                 .expectStatus()
                 .isOk();
@@ -53,7 +58,7 @@ public class EmployeeControllerTest {
 
         long id = employeesBefore.size() + 1;
 
-        EmployeeDto employee = new EmployeeDto(id, "Jason Doe", "CBO", 1_000_000, LocalDateTime.of(2034, 2, 4, 8, 0, 0));
+        EmployeeDto employee = new EmployeeDto(id, "Jason Doe", position, 1_000_000, LocalDateTime.of(2034, 2, 4, 8, 0, 0));
 
         createEmployee(employee)
                 .expectStatus()
@@ -69,11 +74,11 @@ public class EmployeeControllerTest {
     @Test
     void update_updateEmployeeWithValidData_returnsUpdatedEmployee() {
         long id = getAllEmployees().size() + 1;
-        EmployeeDto employee = new EmployeeDto(id, "Jason Doe", "CBO", 1_000_000, LocalDateTime.of(2017, 2, 4, 8, 0, 0));
+        EmployeeDto employee = new EmployeeDto(id, "Jason Doe", position, 1_000_000, LocalDateTime.of(2017, 2, 4, 8, 0, 0));
         createEmployee(employee);
         List<EmployeeDto> employeesBefore = getAllEmployees();
 
-        EmployeeDto newEmployee = new EmployeeDto(id, "Julia Doe", "CBO", 1_200_000, LocalDateTime.of(2021, 7,19,8,0,0));
+        EmployeeDto newEmployee = new EmployeeDto(id, "Julia Doe", position, 1_200_000, LocalDateTime.of(2021, 7,19,8,0,0));
         updateEmployee(id, newEmployee);
         List<EmployeeDto> employeesAfter = getAllEmployees();
 
@@ -89,7 +94,7 @@ public class EmployeeControllerTest {
     @Test
     void update_updateEmployeeWithInvalidData_returnsBadRequest() {
         long id = getAllEmployees().size() + 1;
-        EmployeeDto employee = new EmployeeDto(id, "Jason Doe", "CBO", 1_000_000, LocalDateTime.of(2017, 2, 4, 8, 0, 0));
+        EmployeeDto employee = new EmployeeDto(id, "Jason Doe", position, 1_000_000, LocalDateTime.of(2017, 2, 4, 8, 0, 0));
         EmployeeDto savedEmployee = createEmployee(employee)
                 .expectStatus()
                 .isOk()
@@ -99,7 +104,8 @@ public class EmployeeControllerTest {
 
         List<EmployeeDto> employeesBefore = getAllEmployees();
 
-        EmployeeDto newEmployee = new EmployeeDto(id, "Julia Doe", "", 1_200_000, LocalDateTime.of(2021, 7,19,8,0,0));
+        EmployeeDto newEmployee = new EmployeeDto(id, "Julia Doe", position, 1_200_000, LocalDateTime.of(2021, 7,19,8,0,0));
+        newEmployee.setPosition(null);
         updateEmployee(id, newEmployee)
                 .expectStatus()
                 .isBadRequest();

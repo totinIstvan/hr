@@ -5,7 +5,6 @@ import hu.webuni.hr.totinistvan.model.entity.Company;
 import hu.webuni.hr.totinistvan.model.entity.Employee;
 import hu.webuni.hr.totinistvan.repository.CompanyRepository;
 import hu.webuni.hr.totinistvan.repository.EmployeeRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -14,18 +13,29 @@ import java.util.*;
 @Service
 public class CompanyService {
 
-    @Autowired
-    private CompanyRepository companyRepository;
+    private final CompanyRepository companyRepository;
 
-    @Autowired
-    private EmployeeRepository employeeRepository;
+    private final EmployeeRepository employeeRepository;
+
+    public CompanyService(CompanyRepository companyRepository, EmployeeRepository employeeRepository) {
+        this.companyRepository = companyRepository;
+        this.employeeRepository = employeeRepository;
+    }
 
     public List<Company> findAll() {
         return companyRepository.findAll();
     }
 
+    public List<Company> findAllWithEmployees() {
+        return companyRepository.findAllWithEmployees();
+    }
+
     public Optional<Company> findById(long id) {
         return companyRepository.findById(id);
+    }
+
+    public Optional<Company> findByIdWithEmployees(long companyId) {
+        return companyRepository.findByIdWithEmployees(companyId);
     }
 
     @Transactional
@@ -58,6 +68,8 @@ public class CompanyService {
                 employee.setCompany(company);
                 company.addEmployee(employee);
                 return employeeRepository.save(employee);
+            } else {
+                throw new IllegalArgumentException("Employee with id " + employee.getId() + " already exists!");
             }
         }
         throw new NoSuchElementException();
@@ -100,5 +112,13 @@ public class CompanyService {
 
     public List<AvgSalaryForPosition> averageSalaryOfEmployeesOfSpecifiedCompanyByPosition(long companyId) {
         return companyRepository.averageSalaryOfEmployeesOfSpecifiedCompanyByPositions(companyId);
+    }
+
+    public List<Company> getCompaniesWithSalariesHigherThanLimitWithEmployees(int limit) {
+        return companyRepository.getCompaniesWithSalariesHigherThanLimitWithEmployees(limit);
+    }
+
+    public List<Company> getCompaniesWithNumberOfEmployeesMoreThanLimitWithEmployees(int limit) {
+        return companyRepository.getCompaniesWithNumberOfEmployeesMoreThanLimitWithEmployees(limit);
     }
 }

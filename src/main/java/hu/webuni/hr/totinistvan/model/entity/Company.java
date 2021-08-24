@@ -4,6 +4,13 @@ import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
+@NamedEntityGraph(
+        name = "Company.full",
+        attributeNodes = {
+                @NamedAttributeNode(value = "employees", subgraph = "employees"),
+                @NamedAttributeNode("companyType")},
+        subgraphs = @NamedSubgraph(name = "employees", attributeNodes = @NamedAttributeNode("position"))
+)
 @Entity
 public class Company {
 
@@ -14,11 +21,10 @@ public class Company {
     private String name;
     private String address;
 
-//    @Enumerated(value = EnumType.STRING)
     @ManyToOne
     private CompanyType companyType;
 
-    @OneToMany(mappedBy = "company", cascade = {CascadeType.REMOVE, CascadeType.MERGE, CascadeType.PERSIST})
+    @OneToMany(mappedBy = "company", fetch = FetchType.EAGER, cascade = {CascadeType.REMOVE, CascadeType.MERGE, CascadeType.PERSIST})
     private List<Employee> employees = new ArrayList<>();
 
     public Company() {
@@ -28,6 +34,13 @@ public class Company {
         this.registrationNumber = registrationNumber;
         this.name = name;
         this.address = address;
+    }
+
+    public Company(String registrationNumber, String name, String address, CompanyType companyType) {
+        this.registrationNumber = registrationNumber;
+        this.name = name;
+        this.address = address;
+        this.companyType = companyType;
     }
 
     public long getId() {
@@ -79,11 +92,7 @@ public class Company {
     }
 
     public void addEmployee(Employee employee) {
-        if (!employees.contains(employee)) {
-            employees.add(employee);
-            employee.setCompany(this);
-        } else {
-            throw new IllegalArgumentException("Employee with id " + employee.getId() + " already exists!");
-        }
+        employee.setCompany(this);
+        employees.add(employee);
     }
 }

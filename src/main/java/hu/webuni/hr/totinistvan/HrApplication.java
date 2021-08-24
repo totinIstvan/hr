@@ -37,5 +37,5 @@ public class HrApplication implements  CommandLineRunner {
         initDbService.clearDb();
 
         initDbService.insertTestData();
-    }
+}
 }
