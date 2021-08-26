@@ -28,12 +28,9 @@ public class EmployeeController {
 
     private final EmployeeMapper employeeMapper;
 
-    private final PositionRepository positionRepository;
-
-    public EmployeeController(EmployeeService employeeService, EmployeeMapper employeeMapper, PositionRepository positionRepository) {
+    public EmployeeController(EmployeeService employeeService, EmployeeMapper employeeMapper) {
         this.employeeService = employeeService;
         this.employeeMapper = employeeMapper;
-        this.positionRepository = positionRepository;
     }
 
     @GetMapping
@@ -50,7 +47,6 @@ public class EmployeeController {
 
     @PostMapping
     public EmployeeDto addNew(@RequestBody @Valid EmployeeDto employeeDto) {
-        positionRepository.save(new Position(employeeDto.getPosition().getName()));
         return employeeMapper.employeeToDto(employeeService.save(employeeMapper.employeeDtoToEmployee(employeeDto)));
     }
 

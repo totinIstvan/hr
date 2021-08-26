@@ -4,16 +4,16 @@ import hu.webuni.hr.totinistvan.model.dto.EmployeeDto;
 import hu.webuni.hr.totinistvan.model.entity.Company;
 import hu.webuni.hr.totinistvan.model.entity.CompanyType;
 import hu.webuni.hr.totinistvan.model.entity.Employee;
-import hu.webuni.hr.totinistvan.model.entity.Position;
 import hu.webuni.hr.totinistvan.repository.CompanyRepository;
 import hu.webuni.hr.totinistvan.repository.CompanyTypeRepository;
-import hu.webuni.hr.totinistvan.repository.PositionRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
+import org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWebTestClient;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.web.reactive.server.WebTestClient;
 import org.springframework.test.web.reactive.server.WebTestClient.ResponseSpec;
 
@@ -24,10 +24,11 @@ import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.within;
-import static org.junit.jupiter.api.Assertions.*;
 
-@SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
 @AutoConfigureTestDatabase
+@SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
+@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
+@AutoConfigureWebTestClient(timeout = "36000")
 class CompanyControllerTest {
 
     private static final String BASE_URI = "/api/companies";
@@ -41,9 +42,6 @@ class CompanyControllerTest {
     private CompanyTypeRepository companyTypeRepository;
 
     @Autowired
-    private PositionRepository positionRepository;
-
-    @Autowired
     private CompanyRepository companyRepository;
 
     @Autowired
@@ -54,11 +52,8 @@ class CompanyControllerTest {
         CompanyType testCompanyType = companyTypeRepository.save(new CompanyType("TEST_COMPANY_TYPE"));
         this.testCompany = companyRepository.save(new Company("TEST_REG_NUM", "TEST_COMPANY", "TEST_ADDRESS", testCompanyType));
 
-        Position testPosition = new Position("testPosition");
-        positionRepository.save(testPosition);
-
-        this.testEmployee1 = new EmployeeDto("Test Employee1", testPosition, 10000, LocalDateTime.now());
-        this.testEmployee2 = new EmployeeDto("Test Employee2", testPosition, 20000, LocalDateTime.now());
+        this.testEmployee1 = new EmployeeDto("Test Employee1", "testPosition", 10000, LocalDateTime.now());
+        this.testEmployee2 = new EmployeeDto("Test Employee2", "testPosition", 20000, LocalDateTime.now());
     }
 
     @Test
@@ -85,9 +80,7 @@ class CompanyControllerTest {
         assertThat(testEmployee1.getJoinDate()).isCloseTo(savedEmployee.getJoinDate(), within(1, ChronoUnit.MICROS));
         assertThat(testEmployee1.getSalary()).isEqualTo(savedEmployee.getSalary());
         assertThat(testEmployee1.getPosition())
-                .usingRecursiveComparison()
-                .ignoringFields("employees")
-                .isEqualTo(savedEmployee.getPosition());
+                .isEqualTo(savedEmployee.getPosition().getName());
     }
 
     @Test
@@ -107,6 +100,7 @@ class CompanyControllerTest {
 
         List<Employee> employeesAfter = companyRepository.findByIdWithEmployees(companyId).get().getEmployees();
 
+        assertThat(employeesBefore.size() - 1).isEqualTo(employeesAfter.size());
         assertThat(employeesAfter)
                 .usingRecursiveFieldByFieldElementComparator()
                 .usingElementComparatorIgnoringFields("position", "company")
@@ -131,6 +125,10 @@ class CompanyControllerTest {
 
         List<Employee> employeesAfter = companyRepository.findByIdWithEmployees(companyId).get().getEmployees();
 
+        assertThat(employeesAfter)
+                .usingRecursiveFieldByFieldElementComparator()
+                .usingElementComparatorIgnoringFields("position")
+                .isNotEqualTo(employeesBefore);
         assertThat(employeesAfter)
                 .usingRecursiveFieldByFieldElementComparator()
                 .usingElementComparatorIgnoringFields("id", "position", "company")

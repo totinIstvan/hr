@@ -14,10 +14,8 @@ public class EmployeeDto {
     private long id;
     @NotBlank
     private String name;
-//    @NotBlank
-//    private String position;
-    @NotNull
-    private Position position;
+    @NotBlank
+    private String position;
     @Min(0)
     private int salary;
     @Past
@@ -26,7 +24,7 @@ public class EmployeeDto {
     @JsonIgnore
     private CompanyDto companyDto;
 
-    public EmployeeDto(long id, String name, Position position, int salary, LocalDateTime joinDate) {
+    public EmployeeDto(long id, String name, String position, int salary, LocalDateTime joinDate) {
         this.id = id;
 
         this.name = name;
@@ -42,7 +40,7 @@ public class EmployeeDto {
         this.joinDate = joinDate;
     }
 
-    public EmployeeDto(String name, Position position, int salary, LocalDateTime joinDate) {
+    public EmployeeDto(String name, String position, int salary, LocalDateTime joinDate) {
         this.name = name;
         this.position = position;
         this.salary = salary;
@@ -68,11 +66,11 @@ public class EmployeeDto {
         this.name = name;
     }
 
-    public Position getPosition() {
+    public String getPosition() {
         return position;
     }
 
-    public void setPosition(Position position) {
+    public void setPosition(String position) {
         this.position = position;
     }
 

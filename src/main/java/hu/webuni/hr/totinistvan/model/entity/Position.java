@@ -3,9 +3,9 @@ package hu.webuni.hr.totinistvan.model.entity;
 import hu.webuni.hr.totinistvan.model.Qualification;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.util.List;
 
-//@NamedEntityGraph(name = "Position.employees", attributeNodes = @NamedAttributeNode("employees"))
 @Entity
 public class Position {
 
@@ -13,12 +13,15 @@ public class Position {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
+    @NotNull
+    @Column(unique = true)
     private String name;
 
+    @Enumerated(value = EnumType.STRING)
     private Qualification qualification;
 
-//    @OneToMany(mappedBy = "position")
-//    private List<Employee> employees;
+    @OneToMany(mappedBy = "position")
+    private List<Employee> employees;
 
     public Position() {
     }
@@ -48,13 +51,13 @@ public class Position {
         this.name = name;
     }
 
-//    public List<Employee> getEmployees() {
-//        return employees;
-//    }
-//
-//    public void setEmployees(List<Employee> employees) {
-//        this.employees = employees;
-//    }
+    public List<Employee> getEmployees() {
+        return employees;
+    }
+
+    public void setEmployees(List<Employee> employees) {
+        this.employees = employees;
+    }
 
     public Qualification getQualification() {
         return qualification;

@@ -24,8 +24,8 @@ public class Company {
     @ManyToOne
     private CompanyType companyType;
 
-    @OneToMany(mappedBy = "company", fetch = FetchType.EAGER, cascade = {CascadeType.REMOVE, CascadeType.MERGE, CascadeType.PERSIST})
-    private List<Employee> employees = new ArrayList<>();
+    @OneToMany(mappedBy = "company")
+    private List<Employee> employees;
 
     public Company() {
     }
@@ -92,7 +92,10 @@ public class Company {
     }
 
     public void addEmployee(Employee employee) {
+        if (this.employees == null) {
+            this.employees = new ArrayList<>();
+        }
+        this.employees.add(employee);
         employee.setCompany(this);
-        employees.add(employee);
     }
 }

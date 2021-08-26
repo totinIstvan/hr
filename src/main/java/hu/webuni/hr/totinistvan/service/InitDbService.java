@@ -76,6 +76,18 @@ public class InitDbService {
         Employee employee10 = new Employee("Jacquelyn Doe", 13000, LocalDateTime.of(2004, 2, 24, 8, 0, 0));
         Employee employee11 = new Employee("Jamie Doe", 13500, LocalDateTime.of(1997, 12, 8, 8, 0, 0));
 
+        employeeRepository.save(employee1);
+        employeeRepository.save(employee2);
+        employeeRepository.save(employee3);
+        employeeRepository.save(employee4);
+        employeeRepository.save(employee5);
+        employeeRepository.save(employee6);
+        employeeRepository.save(employee7);
+        employeeRepository.save(employee8);
+        employeeRepository.save(employee9);
+        employeeRepository.save(employee10);
+        employeeRepository.save(employee11);
+
         employee1.setPosition(p1);
         employee2.setPosition(p1);
         employee3.setPosition(p1);

@@ -4,7 +4,6 @@ import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
-@NamedEntityGraph(name = "Employee.position", attributeNodes = @NamedAttributeNode("position"))
 @Entity
 public class Employee {
 

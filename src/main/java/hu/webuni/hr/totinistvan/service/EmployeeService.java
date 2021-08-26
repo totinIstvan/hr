@@ -1,7 +1,9 @@
 package hu.webuni.hr.totinistvan.service;
 
 import hu.webuni.hr.totinistvan.model.entity.Employee;
+import hu.webuni.hr.totinistvan.model.entity.Position;
 import hu.webuni.hr.totinistvan.repository.EmployeeRepository;
+import hu.webuni.hr.totinistvan.repository.PositionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -17,6 +19,9 @@ public abstract class EmployeeService {
     @Autowired
     private EmployeeRepository employeeRepository;
 
+    @Autowired
+    private PositionRepository positionRepository;
+
     public abstract int getPayRaisePercent(Employee employee);
 
     public List<Employee> findAll() {
@@ -29,13 +34,27 @@ public abstract class EmployeeService {
 
     @Transactional
     public Employee save(Employee employee) {
+        setPositionForEmployee(employee, positionRepository);
         return employeeRepository.save(employee);
+    }
+
+    protected static void setPositionForEmployee(Employee employee, PositionRepository positionRepository) {
+        Position position = employee.getPosition();
+        if (position != null && position.getName() != null) {
+            Optional<Position> positionByName = positionRepository.findByName(position.getName());
+            if (positionByName.isEmpty()) {
+                position = positionRepository.save(new Position(position.getName()));
+            } else {
+                position = positionByName.get();
+            }
+        }
+        employee.setPosition(position);
     }
 
     @Transactional
     public Employee update(Employee employee) {
         if (employeeRepository.existsById(employee.getId())) {
-            return employeeRepository.save(employee);
+            return save(employee);
         }
         throw new NoSuchElementException();
     }

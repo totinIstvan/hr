@@ -5,6 +5,7 @@ import hu.webuni.hr.totinistvan.model.entity.Company;
 import hu.webuni.hr.totinistvan.model.entity.Employee;
 import hu.webuni.hr.totinistvan.repository.CompanyRepository;
 import hu.webuni.hr.totinistvan.repository.EmployeeRepository;
+import hu.webuni.hr.totinistvan.repository.PositionRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,9 +18,14 @@ public class CompanyService {
 
     private final EmployeeRepository employeeRepository;
 
-    public CompanyService(CompanyRepository companyRepository, EmployeeRepository employeeRepository) {
+    private final PositionRepository positionRepository;
+
+    public CompanyService(CompanyRepository companyRepository,
+                          EmployeeRepository employeeRepository,
+                          PositionRepository positionRepository) {
         this.companyRepository = companyRepository;
         this.employeeRepository = employeeRepository;
+        this.positionRepository = positionRepository;
     }
 
     public List<Company> findAll() {
@@ -63,9 +69,10 @@ public class CompanyService {
     @Transactional
     public Employee addEmployee(long companyId, Employee employee) throws IllegalArgumentException {
         if (companyRepository.existsById(companyId)) {
-            Company company = companyRepository.findById(companyId).get();
+            Company company = companyRepository.findByIdWithEmployees(companyId).get();
             if (!employeeRepository.existsById(employee.getId())) {
                 employee.setCompany(company);
+                EmployeeService.setPositionForEmployee(employee, positionRepository);
                 company.addEmployee(employee);
                 return employeeRepository.save(employee);
             } else {
@@ -92,11 +99,16 @@ public class CompanyService {
     @Transactional
     public Company updateEmployees(long companyId, List<Employee> newEmployees) {
         if (companyRepository.existsById(companyId)) {
-            Company company = companyRepository.findById(companyId).get();
+            Company company = companyRepository.findByIdWithEmployees(companyId).get();
             company.getEmployees().forEach(e -> e.setCompany(null));
-            newEmployees.forEach(e -> e.setCompany(company));
-            company.setEmployees(newEmployees);
-            return companyRepository.save(company);
+            company.getEmployees().clear();
+
+            newEmployees.forEach(e -> {
+                EmployeeService.setPositionForEmployee(e, positionRepository);
+                company.addEmployee(employeeRepository.save(e));
+                    });
+
+            return company;
         } else {
             throw new NoSuchElementException();
         }
