@@ -4,7 +4,6 @@ import hu.webuni.hr.totinistvan.mapper.CompanyMapper;
 import hu.webuni.hr.totinistvan.model.dto.CompanyDto;
 import hu.webuni.hr.totinistvan.model.dto.EmployeeDto;
 import hu.webuni.hr.totinistvan.repository.CompanyRepository;
-import hu.webuni.hr.totinistvan.repository.CompanyTypeRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,27 +36,28 @@ public class EmployeeControllerTest {
     @Autowired
     private CompanyMapper companyMapper;
 
-    @Autowired
-    private CompanyTypeRepository companyTypeRepository;
-
-    private CompanyDto testCompany;
     private EmployeeDto testEmployee1;
     private EmployeeDto testEmployee2;
     private EmployeeDto testEmployee3;
 
     @BeforeEach
     private void init() {
-//        CompanyType testCompanyType = companyTypeRepository.save(new CompanyType("TEST_COMPANY_TYPE"));
-        this.testCompany = new CompanyDto();
-        this.testCompany.setId(0L);
-        this.testCompany.setName("Test Company");
-        this.testCompany.setRegistrationNumber("Test Registration Number");
-        this.testCompany.setAddress("Test Address");
-        companyRepository.save(companyMapper.companyDtoToCompany(testCompany));
+        CompanyDto testCompany = new CompanyDto();
+        testCompany.setId(0L);
+        testCompany.setName("Test Company");
+        testCompany.setRegistrationNumber("Test Registration Number");
+        testCompany.setAddress("Test Address");
+        long companyId = companyRepository.save(companyMapper.companyDtoToCompany(testCompany)).getId();
+        testCompany.setId(companyId);
 
         this.testEmployee1 = new EmployeeDto("Test Employee1", "testPosition", 19800, LocalDateTime.now());
         this.testEmployee2 = new EmployeeDto("Test Employee2", "testPosition", 20000, LocalDateTime.now());
         this.testEmployee3 = new EmployeeDto("Test Employee3", "anotherTestPosition", 20000, LocalDateTime.now());
+
+        this.testEmployee1.setCompany(testCompany);
+        this.testEmployee2.setCompany(testCompany);
+        this.testEmployee3.setCompany(testCompany);
+
     }
 
     @Test
@@ -154,8 +154,11 @@ public class EmployeeControllerTest {
             createEmployee(e);
         });
 
-        EmployeeDto example = new EmployeeDto("Test Employee", "testPosition", 20200, LocalDateTime.now());
-        List<EmployeeDto> employeesAfter = byExample(example);
+        EmployeeDto example = new EmployeeDto("test eMPL", "testPosition", 20200, LocalDateTime.now());
+        CompanyDto exampleCompany = new CompanyDto();
+        exampleCompany.setName("tESt coMp");
+        example.setCompany(exampleCompany);
+        List<EmployeeDto> employeesAfter = getAllByExample(example);
 
         assertThat(employeesAfter)
                 .usingRecursiveFieldByFieldElementComparator()
@@ -186,12 +189,11 @@ public class EmployeeControllerTest {
                 .expectStatus().isOk()
                 .expectBodyList(EmployeeDto.class)
                 .returnResult().getResponseBody();
-
         responseList.sort(Comparator.comparingLong(EmployeeDto::getId));
         return responseList;
     }
 
-    private List<EmployeeDto> byExample(EmployeeDto example) {
+    private List<EmployeeDto> getAllByExample(EmployeeDto example) {
         List<EmployeeDto> responseList = webTestClient
                 .put()
                 .uri(BASE_URI + "/byExample")
@@ -203,14 +205,4 @@ public class EmployeeControllerTest {
         responseList.sort(Comparator.comparingLong(EmployeeDto::getId));
         return responseList;
     }
-
-//    private EmployeeDto saveEmployee(EmployeeDto employee) {
-//        long id = getAllEmployees().size() + 1;
-//        employee.setId(id);
-//        createEmployee(employee)
-//                .expectStatus()
-//                .isOk();
-//
-//        return employee;
-//    }
 }

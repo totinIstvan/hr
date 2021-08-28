@@ -1,10 +1,14 @@
 package hu.webuni.hr.totinistvan.service;
 
+import hu.webuni.hr.totinistvan.mapper.PositionByCompanyMapper;
 import hu.webuni.hr.totinistvan.model.AvgSalaryForPosition;
+import hu.webuni.hr.totinistvan.model.dto.PositionByCompanyDto;
 import hu.webuni.hr.totinistvan.model.entity.Company;
 import hu.webuni.hr.totinistvan.model.entity.Employee;
+import hu.webuni.hr.totinistvan.model.entity.PositionByCompany;
 import hu.webuni.hr.totinistvan.repository.CompanyRepository;
 import hu.webuni.hr.totinistvan.repository.EmployeeRepository;
+import hu.webuni.hr.totinistvan.repository.PositionByCompanyRepository;
 import hu.webuni.hr.totinistvan.repository.PositionRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

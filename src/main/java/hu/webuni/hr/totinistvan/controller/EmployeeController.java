@@ -96,7 +96,8 @@ public class EmployeeController {
 
     @PutMapping("/byExample")
     public List<EmployeeDto> getEmployeesByExample(@RequestBody EmployeeDto employeeDto) {
-        Employee employee = employeeMapper.employeeDtoToEmployee(employeeDto);
-        return employeeMapper.employeesToDtos(employeeService.findEmployeesByExample(employee));
+        return employeeMapper
+                .employeesToDtos(employeeService
+                        .findEmployeesByExample(employeeMapper.employeeDtoToEmployee(employeeDto)));
     }
 }

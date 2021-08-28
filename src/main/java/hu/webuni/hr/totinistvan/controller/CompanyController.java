@@ -8,6 +8,7 @@ import hu.webuni.hr.totinistvan.model.dto.EmployeeDto;
 import hu.webuni.hr.totinistvan.model.entity.Company;
 import hu.webuni.hr.totinistvan.model.entity.Employee;
 import hu.webuni.hr.totinistvan.service.CompanyService;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -74,18 +75,14 @@ public class CompanyController {
 
     @PostMapping
     public CompanyDto addNew(@RequestBody CompanyDto companyDto) {
-        Company company = companyService.save(companyMapper.companyDtoToCompany(companyDto));
-        List<Employee> employees = employeeMapper.employeeDtosToEmployees(companyDto.getEmployees());
-        company.setEmployees(employees);
-        return companyMapper.companyToDto(company);
+        return companyMapper.companyToDto(companyService.save(companyMapper.companyDtoToCompany(companyDto)));
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<CompanyDto> update(@PathVariable long id, @RequestBody CompanyDto companyDto) {
-        Company company = companyMapper.companyDtoToCompany(companyDto);
-        company.setId(id);
+        companyDto.setId(id);
         try {
-            CompanyDto savedCompanyDto = companyMapper.companyToDto(companyService.update(company));
+            CompanyDto savedCompanyDto = companyMapper.companyToSummaryDto(companyService.update(companyMapper.companyDtoToCompany(companyDto)));
             return ResponseEntity.ok(savedCompanyDto);
         } catch (NoSuchElementException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Company with id " + id + " not found");
@@ -98,6 +95,9 @@ public class CompanyController {
             companyService.deleteById(id);
         } catch (NoSuchElementException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Company with id " + id + " not found");
+        } catch (DataIntegrityViolationException exception) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Company with id " + id +
+                    " cannot be deleted from the database because it still has existing employees");
         }
     }
 
@@ -116,8 +116,8 @@ public class CompanyController {
     public void removeEmployee(@PathVariable("company_id") long companyId, @PathVariable("employee_id") long employeeId) {
         try {
             companyService.removeEmployee(companyId, employeeId);
-        } catch (NoSuchElementException e) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Company with id " + companyId + " not found, or person with id " + employeeId + "not an employee of requested company");
+        } catch (NoSuchElementException | NullPointerException e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Company with id " + companyId + " not found, or person with id " + employeeId + " is not an employee of requested company");
         }
     }
 
