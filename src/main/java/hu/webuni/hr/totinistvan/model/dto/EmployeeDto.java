@@ -1,11 +1,7 @@
 package hu.webuni.hr.totinistvan.model.dto;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import hu.webuni.hr.totinistvan.model.entity.Position;
-
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Past;
 import java.time.LocalDateTime;
 
@@ -21,8 +17,7 @@ public class EmployeeDto {
     @Past
     private LocalDateTime joinDate;
 
-    @JsonIgnore
-    private CompanyDto companyDto;
+    private CompanyDto company;
 
     public EmployeeDto(long id, String name, String position, int salary, LocalDateTime joinDate) {
         this.id = id;
@@ -90,12 +85,12 @@ public class EmployeeDto {
         this.joinDate = joinDate;
     }
 
-    public CompanyDto getCompanyDto() {
-        return companyDto;
+    public CompanyDto getCompany() {
+        return company;
     }
 
-    public void setCompanyDto(CompanyDto companyDto) {
-        this.companyDto = companyDto;
+    public void setCompany(CompanyDto company) {
+        this.company = company;
     }
 
     @Override

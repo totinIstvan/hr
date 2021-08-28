@@ -7,8 +7,11 @@ import hu.webuni.hr.totinistvan.repository.PositionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 
 import java.time.LocalDateTime;
 import java.util.*;
@@ -78,5 +81,45 @@ public abstract class EmployeeService {
 
     public List<Employee> getEmployeesByJoinDateBetween(LocalDateTime start, LocalDateTime end) {
         return employeeRepository.getEmployeesByJoinDateBetween(start, end);
+    }
+
+    public List<Employee> findEmployeesByExample(Employee example) {
+        long id = example.getId();
+        String name = example.getName();
+        String position = example.getPosition().getName();
+        int salary = example.getSalary();
+        LocalDateTime joinDate = example.getJoinDate();
+        String companyName = "";
+        if (example.getCompany() != null) {
+            companyName = example.getCompany().getName();
+        }
+
+        Specification<Employee> spec = Specification.where(null);
+
+        if (id > 0) {
+            spec = spec.and(EmployeeSpecifications.hasId(id));
+        }
+
+        if (StringUtils.hasText(name)) {
+            spec = spec.and(EmployeeSpecifications.hasName(name.toLowerCase()));
+        }
+
+        if (StringUtils.hasText(position)) {
+            spec = spec.and(EmployeeSpecifications.hasPosition(position));
+        }
+
+        if (salary > 0) {
+            spec = spec.and(EmployeeSpecifications.hasSalary(salary));
+        }
+
+        if (joinDate != null) {
+            spec = spec.and(EmployeeSpecifications.hasJoinDate(joinDate));
+        }
+
+        if (StringUtils.hasText(companyName)) {
+            spec = spec.and(EmployeeSpecifications.hasCompany(companyName));
+        }
+
+        return employeeRepository.findAll(spec, Sort.by("id"));
     }
 }

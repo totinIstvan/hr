@@ -28,7 +28,7 @@ public interface CompanyMapper {
     List<CompanyDto> companiesToSummaryDtos(List<Company> companies);
 
     @Mapping(target = "position", source = "position.name")
-    @Mapping(target = "companyDto", ignore = true)
+    @Mapping(target = "company", ignore = true)
     EmployeeDto employeeToDto(Employee employee);
 
     @Mapping(source = "position", target = "position.name")

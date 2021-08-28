@@ -1,6 +1,11 @@
 package hu.webuni.hr.totinistvan.controller;
 
+import hu.webuni.hr.totinistvan.mapper.CompanyMapper;
+import hu.webuni.hr.totinistvan.model.dto.CompanyDto;
 import hu.webuni.hr.totinistvan.model.dto.EmployeeDto;
+import hu.webuni.hr.totinistvan.repository.CompanyRepository;
+import hu.webuni.hr.totinistvan.repository.CompanyTypeRepository;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
@@ -12,6 +17,7 @@ import org.springframework.test.web.reactive.server.WebTestClient.ResponseSpec;
 import java.time.LocalDateTime;
 import java.util.Comparator;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicLong;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
@@ -25,14 +31,43 @@ public class EmployeeControllerTest {
     @Autowired
     private WebTestClient webTestClient;
 
+    @Autowired
+    private CompanyRepository companyRepository;
+
+    @Autowired
+    private CompanyMapper companyMapper;
+
+    @Autowired
+    private CompanyTypeRepository companyTypeRepository;
+
+    private CompanyDto testCompany;
+    private EmployeeDto testEmployee1;
+    private EmployeeDto testEmployee2;
+    private EmployeeDto testEmployee3;
+
+    @BeforeEach
+    private void init() {
+//        CompanyType testCompanyType = companyTypeRepository.save(new CompanyType("TEST_COMPANY_TYPE"));
+        this.testCompany = new CompanyDto();
+        this.testCompany.setId(0L);
+        this.testCompany.setName("Test Company");
+        this.testCompany.setRegistrationNumber("Test Registration Number");
+        this.testCompany.setAddress("Test Address");
+        companyRepository.save(companyMapper.companyDtoToCompany(testCompany));
+
+        this.testEmployee1 = new EmployeeDto("Test Employee1", "testPosition", 19800, LocalDateTime.now());
+        this.testEmployee2 = new EmployeeDto("Test Employee2", "testPosition", 20000, LocalDateTime.now());
+        this.testEmployee3 = new EmployeeDto("Test Employee3", "anotherTestPosition", 20000, LocalDateTime.now());
+    }
+
     @Test
     void addNew_addEmployeeWithValidData_returnsCorrectResults() {
         List<EmployeeDto> employeesBefore = getAllEmployees();
 
         long id = employeesBefore.size() + 1;
 
-        EmployeeDto employee = new EmployeeDto(id, "Jason Doe", "CBO", 1_000_000, LocalDateTime.of(2017, 2, 4, 8, 0, 0));
-        createEmployee(employee)
+        testEmployee1.setId(id);
+        createEmployee(this.testEmployee1)
                 .expectStatus()
                 .isOk();
 
@@ -46,18 +81,15 @@ public class EmployeeControllerTest {
 
         assertThat(employeesAfter.get(employeesAfter.size() - 1))
                 .usingRecursiveComparison()
-                .isEqualTo(employee);
+                .isEqualTo(testEmployee1);
     }
 
     @Test
-    void addNew_addEmployeeWithInvalidJoinDate_returnsBadRequest() {
+    void addNew_addEmployeeWithInvalidJoinDate_returnsBadRequestAndDoesNotChangesAnything() {
         List<EmployeeDto> employeesBefore = getAllEmployees();
 
-        long id = employeesBefore.size() + 1;
-
-        EmployeeDto employee = new EmployeeDto(id, "Jason Doe", "CBO", 1_000_000, LocalDateTime.of(2034, 2, 4, 8, 0, 0));
-
-        createEmployee(employee)
+        this.testEmployee1.setJoinDate(LocalDateTime.of(2034, 2, 4, 8, 0, 0));
+        createEmployee(this.testEmployee1)
                 .expectStatus()
                 .isBadRequest();
 
@@ -71,12 +103,16 @@ public class EmployeeControllerTest {
     @Test
     void update_updateEmployeeWithValidData_returnsUpdatedEmployee() {
         long id = getAllEmployees().size() + 1;
-        EmployeeDto employee = new EmployeeDto(id, "Jason Doe", "CBO", 1_000_000, LocalDateTime.of(2017, 2, 4, 8, 0, 0));
-        createEmployee(employee);
+        this.testEmployee1.setId(id);
+        createEmployee(this.testEmployee1)
+                .expectStatus()
+                .isOk();
         List<EmployeeDto> employeesBefore = getAllEmployees();
 
-        EmployeeDto newEmployee = new EmployeeDto(id, "Julia Doe", "CBO", 1_200_000, LocalDateTime.of(2021, 7,19,8,0,0));
-        updateEmployee(id, newEmployee);
+        this.testEmployee2.setId(id);
+        updateEmployee(id, this.testEmployee2)
+                .expectStatus()
+                .isOk();
         List<EmployeeDto> employeesAfter = getAllEmployees();
 
         assertThat(employeesBefore.get(employeesBefore.size() - 1))
@@ -85,33 +121,45 @@ public class EmployeeControllerTest {
 
         assertThat(employeesAfter.get(employeesBefore.size() - 1))
                 .usingRecursiveComparison()
-                .isEqualTo(newEmployee);
+                .isEqualTo(this.testEmployee2);
     }
 
     @Test
-    void update_updateEmployeeWithInvalidData_returnsBadRequest() {
+    void update_updateEmployeeWithInvalidData_returnsBadRequestAndDoesNotChangesAnything() {
         long id = getAllEmployees().size() + 1;
-        EmployeeDto employee = new EmployeeDto(id, "Jason Doe", "CBO", 1_000_000, LocalDateTime.of(2017, 2, 4, 8, 0, 0));
-        EmployeeDto savedEmployee = createEmployee(employee)
+        this.testEmployee1.setId(id);
+        createEmployee(this.testEmployee1)
                 .expectStatus()
-                .isOk()
-                .expectBody(EmployeeDto.class)
-                .returnResult()
-                .getResponseBody();
-
+                .isOk();
         List<EmployeeDto> employeesBefore = getAllEmployees();
 
-        EmployeeDto newEmployee = new EmployeeDto(id, "Julia Doe", "CBO", 1_200_000, LocalDateTime.of(2021, 7,19,8,0,0));
-        newEmployee.setPosition(null);
-        updateEmployee(id, newEmployee)
+        this.testEmployee2.setPosition(null);
+        updateEmployee(id, testEmployee2)
                 .expectStatus()
                 .isBadRequest();
         List<EmployeeDto> employeesAfter = getAllEmployees();
 
         assertEquals(employeesAfter.size(), employeesBefore.size());
-        assertThat(employeesAfter.get(employeesAfter.size() -1))
+        assertThat(employeesAfter.get(employeesAfter.size() - 1))
                 .usingRecursiveComparison()
-                .isEqualTo(employee);
+                .isEqualTo(testEmployee1);
+    }
+
+    @Test
+    void getEmployeesByExample_callWithValidData_returnsListOfMatchingEmployees() {
+        AtomicLong id = new AtomicLong(getAllEmployees().size());
+        List<EmployeeDto> employees = List.of(testEmployee1, testEmployee2, testEmployee3);
+        employees.forEach(e -> {
+            e.setId(id.incrementAndGet());
+            createEmployee(e);
+        });
+
+        EmployeeDto example = new EmployeeDto("Test Employee", "testPosition", 20200, LocalDateTime.now());
+        List<EmployeeDto> employeesAfter = byExample(example);
+
+        assertThat(employeesAfter)
+                .usingRecursiveFieldByFieldElementComparator()
+                .containsExactly(testEmployee1, testEmployee2);
     }
 
     private ResponseSpec createEmployee(EmployeeDto employee) {
@@ -142,4 +190,27 @@ public class EmployeeControllerTest {
         responseList.sort(Comparator.comparingLong(EmployeeDto::getId));
         return responseList;
     }
+
+    private List<EmployeeDto> byExample(EmployeeDto example) {
+        List<EmployeeDto> responseList = webTestClient
+                .put()
+                .uri(BASE_URI + "/byExample")
+                .bodyValue(example)
+                .exchange()
+                .expectStatus().isOk()
+                .expectBodyList(EmployeeDto.class)
+                .returnResult().getResponseBody();
+        responseList.sort(Comparator.comparingLong(EmployeeDto::getId));
+        return responseList;
+    }
+
+//    private EmployeeDto saveEmployee(EmployeeDto employee) {
+//        long id = getAllEmployees().size() + 1;
+//        employee.setId(id);
+//        createEmployee(employee)
+//                .expectStatus()
+//                .isOk();
+//
+//        return employee;
+//    }
 }

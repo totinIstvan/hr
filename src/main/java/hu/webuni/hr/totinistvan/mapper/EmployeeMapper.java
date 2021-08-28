@@ -24,4 +24,7 @@ public interface EmployeeMapper {
 
     @Mapping(target = "employees", ignore = true)
     CompanyDto companyToDto(Company company);
+
+    @Mapping(target = "employees", ignore = true)
+    Company dtoToCompany(CompanyDto companyDto);
 }

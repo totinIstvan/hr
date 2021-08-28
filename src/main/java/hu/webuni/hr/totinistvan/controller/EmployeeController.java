@@ -3,10 +3,7 @@ package hu.webuni.hr.totinistvan.controller;
 import hu.webuni.hr.totinistvan.mapper.EmployeeMapper;
 import hu.webuni.hr.totinistvan.model.dto.EmployeeDto;
 import hu.webuni.hr.totinistvan.model.entity.Employee;
-import hu.webuni.hr.totinistvan.model.entity.Position;
-import hu.webuni.hr.totinistvan.repository.PositionRepository;
 import hu.webuni.hr.totinistvan.service.EmployeeService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -92,7 +89,14 @@ public class EmployeeController {
     }
 
     @GetMapping("/start_date/{s}/endDate/{e}")
-    public List<EmployeeDto> getEmployeesByJoinDateBetween(@PathVariable("s") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime start, @PathVariable("e") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime end) {
+    public List<EmployeeDto> getEmployeesByJoinDateBetween(@PathVariable("s") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime start,
+                                                           @PathVariable("e") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime end) {
         return employeeMapper.employeesToDtos(employeeService.getEmployeesByJoinDateBetween(start, end));
+    }
+
+    @PutMapping("/byExample")
+    public List<EmployeeDto> getEmployeesByExample(@RequestBody EmployeeDto employeeDto) {
+        Employee employee = employeeMapper.employeeDtoToEmployee(employeeDto);
+        return employeeMapper.employeesToDtos(employeeService.findEmployeesByExample(employee));
     }
 }
