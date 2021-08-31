@@ -111,7 +111,6 @@ public class CompanyService {
                 EmployeeService.setPositionForEmployee(e, positionRepository);
                 company.addEmployee(employeeRepository.save(e));
                     });
-
             return company;
         } else {
             throw new NoSuchElementException();

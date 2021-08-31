@@ -2,6 +2,8 @@ package hu.webuni.hr.totinistvan.model.entity;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 @Entity
@@ -22,6 +24,12 @@ public class Employee {
 
     @ManyToOne
     private Company company;
+
+    @OneToMany(mappedBy = "applicant")
+    private List<LeaveOfAbsenceRequest> leaveOfAbsenceRequests;
+
+    @ManyToOne
+    private Employee manager;
 
     public Employee() {
     }
@@ -92,6 +100,30 @@ public class Employee {
 
     public void setCompany(Company company) {
         this.company = company;
+    }
+
+    public List<LeaveOfAbsenceRequest> getLeaveOfAbsenceRequests() {
+        return leaveOfAbsenceRequests;
+    }
+
+    public void setLeaveOfAbsenceRequests(List<LeaveOfAbsenceRequest> leaveOfAbsenceRequests) {
+        this.leaveOfAbsenceRequests = leaveOfAbsenceRequests;
+    }
+
+    public Employee getManager() {
+        return manager;
+    }
+
+    public void setManager(Employee manager) {
+        this.manager = manager;
+    }
+
+    public void addLeaveOfAbsenceRequest(LeaveOfAbsenceRequest leaveOfAbsenceRequest) {
+        if (this.leaveOfAbsenceRequests == null) {
+            this.leaveOfAbsenceRequests = new ArrayList<>();
+        }
+        this.leaveOfAbsenceRequests.add(leaveOfAbsenceRequest);
+        leaveOfAbsenceRequest.setApplicant(this);
     }
 
     @Override

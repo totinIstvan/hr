@@ -101,7 +101,7 @@ public abstract class EmployeeService {
         }
 
         if (StringUtils.hasText(name)) {
-            spec = spec.and(EmployeeSpecifications.hasName(name.toLowerCase()));
+            spec = spec.and(EmployeeSpecifications.hasName(name));
         }
 
         if (StringUtils.hasText(position)) {

@@ -94,7 +94,7 @@ public class EmployeeController {
         return employeeMapper.employeesToDtos(employeeService.getEmployeesByJoinDateBetween(start, end));
     }
 
-    @PutMapping("/byExample")
+    @PostMapping("/byExample")
     public List<EmployeeDto> getEmployeesByExample(@RequestBody EmployeeDto employeeDto) {
         return employeeMapper
                 .employeesToDtos(employeeService
