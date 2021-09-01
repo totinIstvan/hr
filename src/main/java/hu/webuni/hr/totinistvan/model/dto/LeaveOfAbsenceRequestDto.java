@@ -28,6 +28,12 @@ public class LeaveOfAbsenceRequestDto {
     public LeaveOfAbsenceRequestDto() {
     }
 
+    public LeaveOfAbsenceRequestDto(Long applicantId, LocalDate startDate, LocalDate endDate) {
+        this.applicantId = applicantId;
+        this.startDate = startDate;
+        this.endDate = endDate;
+    }
+
     public long getId() {
         return id;
     }

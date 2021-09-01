@@ -23,7 +23,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
 @AutoConfigureTestDatabase
-public class EmployeeControllerTest {
+public class EmployeeControllerIT {
 
     private static final String BASE_URI = "/api/employees";
 
@@ -195,7 +195,7 @@ public class EmployeeControllerTest {
 
     private List<EmployeeDto> getAllByExample(EmployeeDto example) {
         List<EmployeeDto> responseList = webTestClient
-                .put()
+                .post()
                 .uri(BASE_URI + "/byExample")
                 .bodyValue(example)
                 .exchange()

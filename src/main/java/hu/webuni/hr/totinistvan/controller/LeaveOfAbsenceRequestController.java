@@ -38,7 +38,8 @@ public class LeaveOfAbsenceRequestController {
     @GetMapping("/{id}")
     public LeaveOfAbsenceRequestDto getById(@PathVariable long id) {
         LeaveOfAbsenceRequest leaveOfAbsenceRequest = leaveOfAbsenceRequestService.findById(id)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Request for leave of absence with id " + id + " not found"));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
+                        "Request for leave of absence with id " + id + " not found"));
         return leaveOfAbsenceRequestMapper.leaveOfAbsenceRequestToDto(leaveOfAbsenceRequest);
     }
 
@@ -61,10 +62,10 @@ public class LeaveOfAbsenceRequestController {
     }
 
     @PutMapping("/{id}")
-    public LeaveOfAbsenceRequestDto update(@PathVariable long id, @RequestBody @Valid LeaveOfAbsenceRequestDto leaveOfAbsenceRequestDto) {
+    public LeaveOfAbsenceRequestDto update(@PathVariable long id,
+                                           @RequestBody @Valid LeaveOfAbsenceRequestDto leaveOfAbsenceRequestDto) {
         leaveOfAbsenceRequestDto.setId(id);
         long applicantId = leaveOfAbsenceRequestDto.getApplicantId();
-        leaveOfAbsenceRequestDto.setAccepted(null);
         leaveOfAbsenceRequestDto.setApprovalDate(null);
         leaveOfAbsenceRequestDto.setApplicationDate(LocalDateTime.now());
         try {
@@ -75,9 +76,11 @@ public class LeaveOfAbsenceRequestController {
             savedLeaveOfAbsenceRequestDto.setApplicantId(leaveOfAbsenceRequestDto.getApplicantId());
             return savedLeaveOfAbsenceRequestDto;
         } catch (NoSuchElementException e) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Request for leave of absence with id " + id + " not found");
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND,
+                    "Request for leave of absence with id " + id + " not found");
         } catch (IllegalAccessException exception) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Request for leave of absence with id " + id + " is already evaluated");
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN,
+                    "Request for leave of absence with id " + id + " is already evaluated");
         }
     }
 
@@ -86,25 +89,30 @@ public class LeaveOfAbsenceRequestController {
         try {
             leaveOfAbsenceRequestService.deleteById(id);
         } catch (NoSuchElementException e) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Request for leave of absence with id " + id + " not found");
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND,
+                    "Request for leave of absence with id " + id + " not found");
         } catch (IllegalAccessException exception) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Request for leave of absence with id " + id + " is already evaluated");
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN,
+                    "Request for leave of absence with id " + id + " is already evaluated");
         }
     }
 
     @PutMapping("/{id}/approver/{approverId}")
-    public LeaveOfAbsenceRequestDto approveLeaveOfAbsentRequest(@PathVariable long id, @PathVariable long approverId, @RequestParam boolean status) {
+    public LeaveOfAbsenceRequestDto approveLeaveOfAbsentRequest(@PathVariable long id,
+                                                                @PathVariable long approverId,
+                                                                @RequestParam boolean status) {
         LeaveOfAbsenceRequest leaveOfAbsenceRequest;
         try {
             leaveOfAbsenceRequest = leaveOfAbsenceRequestService.approve(id, approverId, status);
         } catch (NoSuchElementException e) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Request for leave of absence with id " + id + " not found");
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND,
+                    "Request for leave of absence with id " + id + " not found");
         }
         return leaveOfAbsenceRequestMapper.leaveOfAbsenceRequestToDto(leaveOfAbsenceRequest);
     }
 
     @PostMapping("/byExample")
-    public List<LeaveOfAbsenceRequestDto> findByExample(@RequestBody LeaveOfAbsenceRequestFilterDto example, Pageable pageable) {
+    public List<LeaveOfAbsenceRequestDto> getLeaveOfAbsentRequestsByExample(@RequestBody LeaveOfAbsenceRequestFilterDto example, Pageable pageable) {
         Page<LeaveOfAbsenceRequest> page = leaveOfAbsenceRequestService.findRequestsByExample(example, pageable);
         return leaveOfAbsenceRequestMapper.leaveOfAbsenceRequestsToDtos(page.getContent());
     }

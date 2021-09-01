@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Service
@@ -23,6 +24,9 @@ public class InitDbService {
 
     @Autowired
     private PositionRepository positionRepository;
+
+    @Autowired
+    private LeaveOfAbsenceRequestRepository leaveOfAbsenceRequestRepository;
 
     public void clearDb() {
         companyRepository.deleteAll();
@@ -115,5 +119,12 @@ public class InitDbService {
         company3.addEmployee(employee3);
         company3.addEmployee(employee10);
         company3.addEmployee(employee11);
+
+        LeaveOfAbsenceRequest leaveOfAbsenceRequest = new LeaveOfAbsenceRequest();
+        leaveOfAbsenceRequest.setApplicant(employee4);
+        leaveOfAbsenceRequest.setStartDate(LocalDate.of(2021, 10, 8));
+        leaveOfAbsenceRequest.setEndDate(LocalDate.of(2021, 10, 15));
+        leaveOfAbsenceRequest.setApplicationDate(LocalDateTime.of(2021, 9, 25, 8, 0, 0));
+        leaveOfAbsenceRequestRepository.save(leaveOfAbsenceRequest);
     }
 }

@@ -29,7 +29,7 @@ import static org.assertj.core.api.Assertions.within;
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 @AutoConfigureWebTestClient(timeout = "36000")
-class CompanyControllerTest {
+class CompanyControllerIT {
 
     private static final String BASE_URI = "/api/companies";
 
@@ -103,13 +103,13 @@ class CompanyControllerTest {
         assertThat(employeesBefore.size() - 1).isEqualTo(employeesAfter.size());
         assertThat(employeesAfter)
                 .usingRecursiveFieldByFieldElementComparator()
-                .usingElementComparatorIgnoringFields("position", "company")
+                .usingElementComparatorIgnoringFields("position", "company", "leaveOfAbsenceRequests")
                 .containsExactlyElementsOf(employeesBefore.subList(0, employeesAfter.size()));
 
     }
 
     @Test
-    void replaceAllEmployees() {
+    void replaceAllEmployees_callWithValidData_returnsListOfNewEmployees() {
         long companyId = testCompany.getId();
         addEmployeeToCompany(companyId, testEmployee1)
                 .expectStatus()
@@ -127,11 +127,11 @@ class CompanyControllerTest {
 
         assertThat(employeesAfter)
                 .usingRecursiveFieldByFieldElementComparator()
-                .usingElementComparatorIgnoringFields("position")
+                .usingElementComparatorIgnoringFields("id", "position", "company", "manager", "leaveOfAbsenceRequests")
                 .isNotEqualTo(employeesBefore);
         assertThat(employeesAfter)
                 .usingRecursiveFieldByFieldElementComparator()
-                .usingElementComparatorIgnoringFields("id", "position", "company")
+                .usingElementComparatorIgnoringFields("id", "position", "company", "manager", "leaveOfAbsenceRequests")
                 .isEqualTo(newEmployees);
     }
 
